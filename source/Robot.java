@@ -8,6 +8,8 @@ public class Robot
     public static final String VERT  = "\u001B[32m";
     public static final String CYAN  = "\u001B[36m";
     public static final String JAUNE = "\u001B[33m";
+    public static final String GRAS         = "\u001B[1m" ;  
+    public static final String SOULIGNE     = "\u001B[4m" ; 
 
     private String             nom;
     private int                pv;
@@ -36,7 +38,7 @@ public class Robot
     /* ---------------------- */
     public void addAttaque(Attaque attaque) { this.ensAttaque.add(attaque); }
 
-    public void infligerAttaque(Attaque attaque, Robot ennemi)
+    public boolean infligerAttaque(Attaque attaque, Robot ennemi)
     {
         int precision, hasard;
 
@@ -44,12 +46,12 @@ public class Robot
 
         if ( hasard > attaque.getPrecison())
         {
-            System.out.println("Attaque raté");
+            return false;
         }
         else
         {
             ennemi.pv -= attaque.getDegat();
-            System.out.println("Attaque réussie");
+            return true;
         }
     }
 
@@ -57,11 +59,11 @@ public class Robot
     {
         String sRet = "";
 
-        sRet = VERT + "Robot :" + RESET + "\n" +
+        sRet = VERT + SOULIGNE + "Robot :" + RESET + "\n" +
               " " + CYAN + "- Nom   : " + ROUGE + this.nom + RESET + "\n" +
               " " + CYAN + "- Pv    : " + RESET + this.pv + "\n" +
               " " + CYAN + "- Speed : " + RESET + this.vitesse + "\n" +
-              JAUNE + "   Attaques du Robot : " + RESET + "\n";
+              JAUNE + SOULIGNE + "   Attaques du Robot : " + RESET + "\n";
 
         for (int cpt = 0; cpt < this.ensAttaque.size(); cpt++)
             sRet += "    # " + cpt + " : " + this.ensAttaque.get(cpt) + "\n";

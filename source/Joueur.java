@@ -5,10 +5,15 @@ import java.net.Socket;
 public class Joueur
 {
     // Couleurs ANSI
-    public static final String RESET = "\u001B[0m";
-    public static final String VERT  = "\u001B[32m";
-    public static final String CYAN  = "\u001B[36m";
-    public static final String JAUNE = "\u001B[33m";
+    public static final String RESET        = "\u001B[0m";
+    public static final String VERT         = "\u001B[32m";
+    public static final String CYAN         = "\u001B[36m";
+    public static final String JAUNE        = "\u001B[33m";
+    public static final String ROUGE        = "\u001B[31m";
+    public static final String MAGENTA      = "\u001B[35m";
+    public static final String BLANC        = "\u001B[37m";
+    public static final String GRAS         = "\u001B[1m" ;  
+    public static final String SOULIGNE     = "\u001B[4m" ; 
 
     private String     nom;
     private Robot      robot;
@@ -27,8 +32,8 @@ public class Joueur
     
     public String toString()
     {
-        return VERT + "Joueur :" + RESET + "\n" +
-                " " + CYAN + "- Nom: " + RESET + this.nom + "\n" + 
+        return VERT + SOULIGNE + "Joueur :" + RESET + "\n" +
+                " " + CYAN + "- Nom: " + RESET + ROUGE + GRAS +  this.nom + RESET + "\n" + 
                 this.robot;  // Affiche le robot avec son toString() proprement
     }
 
@@ -39,27 +44,33 @@ public class Joueur
     public Robot  getRobotJoueur() { return this.robot; }
     public String getNom()         { return this.nom; }
 
-    public Socket getSocket() { 
+    public Socket getSocket() 
+    { 
         return this.socket; 
     }
     
-    public void setSocket(Socket socket) { 
+    public void setSocket(Socket socket) 
+    { 
         this.socket = socket; 
     }
     
-    public PrintWriter getWriter() { 
+    public PrintWriter getWriter() 
+    { 
         return this.writer; 
     }
     
-    public void setWriter(PrintWriter writer) { 
+    public void setWriter(PrintWriter writer) 
+    { 
         this.writer = writer; 
     }
     
-    public BufferedReader getReader() { 
+    public BufferedReader getReader() 
+    { 
         return this.reader; 
     }
     
-    public void setReader(BufferedReader reader) { 
+    public void setReader(BufferedReader reader) 
+    { 
         this.reader = reader; 
     }
 
@@ -69,11 +80,6 @@ public class Joueur
     public void choixAttaque(Joueur victim, String input)
     {        
         int choix = Integer.parseInt(input);
-
-        // Affichage de l'attaque avec couleur
-        System.out.println(JAUNE + "Vous avez choisi l'attaque : " + RESET + this.robot.getAttaque(choix));
-
-        // Enlever la vie par rapport à l'attaque
         this.robot.infligerAttaque(this.robot.getAttaque(choix), victim.getRobotJoueur());
     }
 
@@ -88,7 +94,7 @@ public class Joueur
             cpt++;
         }
         if (cpt == this.ctrl.getEnsRobot().size())
-            cpt = 1;
+            cpt = 0;
         
         // Affiche le robot choisi avec couleur
         System.out.println(CYAN + "Vous avez choisi le robot : " + RESET + this.ctrl.getRobot(cpt));

@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Controleur 
 {   
@@ -35,23 +33,29 @@ public class Controleur
     public static final String BLEU         = "\u001B[34m";
     public static final String CYAN         = "\u001B[36m";
     public static final String BLEU_CLAIR   = "\u001B[94m";
+    public static final String GRAS         = "\u001B[1m" ;  
+    public static final String SOULIGNE     = "\u001B[4m" ;  
+
 
     // Port du serveur
     private static final int PORT = 9000;
 
     // Attributs
-    private Map<String, Joueur> joueurs;
     private ArrayList<Attaque>  ensAttaque;
     private ArrayList<Robot>    ensRobot;
     private ServerSocket        serverSocket;
     private int                 nombreJoueurs;
 
+    private Joueur              j1;
+    private Joueur              j2;
+
     public Controleur()
     {
-        this.joueurs       = new HashMap<>();
         this.ensAttaque    = new ArrayList<>();
         this.ensRobot      = new ArrayList<>();
         this.nombreJoueurs = 0;
+        this.j1            = null;
+        this.j2            = null;
 
         this.initRobot();
         this.initAttaque();
@@ -74,20 +78,20 @@ public class Controleur
             
             System.out.println(JAUNE + "En attente du premier joueur..." + RESET);
             Socket socketJ1 = serverSocket.accept();
-            Joueur j1 = connecterJoueur(socketJ1, "Joueur 1");
+            this.j1 = connecterJoueur(socketJ1, "Joueur 1");
             
             System.out.println(JAUNE + "Premier joueur connecté! En attente du second joueur..." + RESET);
             Socket socketJ2 = serverSocket.accept();
-            Joueur j2 = connecterJoueur(socketJ2, "Joueur 2");
+            this.j2 = connecterJoueur(socketJ2, "Joueur 2");
             
             System.out.println(VERT + "Deux joueurs connectés! Démarrage de la partie." + RESET);
 
             /* Lancment de la partie */
             /* --------------------- */
-            jouerPartie(j1, j2);
+            jouerPartie(this.j1, this.j2);
             
             // Fin de la partie après
-            finaliserPartie(j1, j2);
+            finaliserPartie(this.j1, this.j2);
             
         } 
         catch (IOException e) 
@@ -132,16 +136,23 @@ public class Controleur
         out.println("Bonjour " + nomJoueur + "!");
         
         // Afficher les robots disponibles
-        out.println("Voici les robots disponibles:");
-        out.println(getRobotsAsString());
-        out.println("Choisissez un robot (entrez le numéro):");
-        
-        // Attendre le choix du robot
-        String choixRobot = in.readLine();
-        joueur.choixRobot(choixRobot);
-        
-        out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
-        
+
+        while(joueur.getRobotJoueur() == null)
+        {
+            out.println("Voici les robots disponibles:");
+            out.println(getRobotsAvailableAsString());
+            out.println("Choisissez un robot (entrez le nom complet du robot (sans fautes d'orthographes svp) ):");
+            
+            // On enlève le robot déjà choisit
+            this.ensRobot.remove( j1 );
+
+            // Attendre le choix du robot
+            String choixRobot = in.readLine();
+
+            joueur.choixRobot(choixRobot);
+            
+            out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
+        }
         return joueur;
     }
     
@@ -150,6 +161,8 @@ public class Controleur
      */
     private void jouerPartie(Joueur j1, Joueur j2) 
     {
+        
+        // On initialise les variables pour leur envoyer des messages
         PrintWriter    out1 = j1.getWriter();
         PrintWriter    out2 = j2.getWriter();
         BufferedReader in1  = j1.getReader();
@@ -166,10 +179,12 @@ public class Controleur
             if ( j1.getRobotJoueur().getVit() < j2.getRobotJoueur().getVit() )
                 j2Joue = true;
 
-            // Boucle du jeu
+            /* ------------------------------ */
+            /*           Boucle du jeu        */
+            /* ------------------------------ */
             while (j1.getRobotJoueur().getPv() > 0 && j2.getRobotJoueur().getPv() > 0) 
             {
-                String infoTour = "\n********     Tour : " + tours + "     *******\n";
+                String infoTour = JAUNE  + GRAS + "\n********     Tour : " + tours + "     *******\n" + RESET;
                 infoTour += j1.getNom() + " - " + j1.getRobotJoueur().toString() + "\n";
                 infoTour += j2.getNom() + " - " + j2.getRobotJoueur().toString();
                 
@@ -245,20 +260,20 @@ public class Controleur
         joueur.getWriter().println(ROUGE + "Ne baissez pas les bras, réessayez !" + RESET);
     }
     
-    private void afficherDegat(Joueur jAtt, Joueur jDef, int numAttaqueRobot)
+    private void afficherDegat ( Joueur jAtt, Joueur jDef, int numAttaqueRobot )
     {
         jAtt.getWriter().println(
-                    String.format("%-25s",jAtt.getNom())     + " attaque avec      : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getNom()                 + RESET     + "\n" +
-                    String.format("%-25s",jDef.getNom())     + " a subi            : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getDegat()  + " dégats " + RESET     + "\n" +
-                    "Le Robot de : \n" +
-                    String.format("%-25s",jDef.getNom()) + " a   : " + BLEU_CLAIR + jDef.getRobotJoueur().getPv()                                                                + RESET     + " PV\n"
+                    String.format("%-15s",jAtt.getNom())     + " attaque avec      : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getNom()                 + RESET     + "\n" +
+                    String.format("%-15s",jDef.getNom())     + " a subi            : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getDegat()  + " dégats " + RESET     + "\n" +
+                    "\nLe Robot de : \n" +
+                    String.format("%-15s",jDef.getNom()) + " a   : " + BLEU_CLAIR + jDef.getRobotJoueur().getPv()                                                                + RESET     + " PV\n"
                     );
 
         jDef.getWriter().println(
-                    String.format("%-25s",jAtt.getNom())     + " attaque avec      : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getNom()                 + RESET     + "\n" +
-                    String.format("%-25s",jDef.getNom())     + " a subi            : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getDegat()  + " dégats " + RESET     + "\n" +
-                    "Le Robot de : \n" +
-                    String.format("%-25s",jDef.getNom()) + " a   : " + BLEU_CLAIR + jDef.getRobotJoueur().getPv()                                                                + RESET     + " PV\n"
+                    String.format("%-15s",jAtt.getNom())     + " attaque avec      : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getNom()                 + RESET     + "\n" +
+                    String.format("%-15s",jDef.getNom())     + " a subi            : " + BLEU_CLAIR + jAtt.getRobotJoueur().getAttaque(numAttaqueRobot).getDegat()  + " dégats " + RESET     + "\n" +
+                    "\nLe Robot de : \n" +
+                    String.format("%-15s",jDef.getNom()) + " a   : " + BLEU_CLAIR + jDef.getRobotJoueur().getPv()                                                                + RESET     + " PV\n"
                     );
 
     }
@@ -285,21 +300,32 @@ public class Controleur
             Attaque attaque  = robotAttacker.getAttaque(indexAttaque);
             
             // Appliquer les dégâts
-            double degats = attaque.getDegat();
-            robotDefender.infligerAttaque(attaque, robotAttacker );
+            double  degats   = attaque.getDegat();
+            boolean bAttaque = robotAttacker.infligerAttaque(attaque, robotDefender );
+
+            // On vérifie que l'attauqe 
+            String msgAttaque = "";
+            if ( bAttaque ) 
+            {
+                msgAttaque = attacker.getNom() + " utilise " + attaque.getNom() + 
+                        " et inflige " + degats + " dégâts!";
+            }
+            else
+            {
+                msgAttaque = attacker.getNom() + " utilise " + attaque.getNom() + 
+                        " mais l'attaque a échoué";
+            }
+                // Informer les joueurs des nouvelles attaquent
+                attacker.getWriter().println(msgAttaque);
+                defender.getWriter().println(msgAttaque);
             
-            // Informer les joueurs des nouvelles attaquent
-            String msgAttaque = attacker.getNom() + " utilise " + attaque.getNom() + 
-                                " et inflige " + degats + " dégâts!";
-            attacker.getWriter().println(msgAttaque);
-            defender.getWriter().println(msgAttaque);
-        
-            String pv = defender.getNom() + " a maintenant " + robotDefender.getPv() + " PV.";
-            attacker.getWriter().println(pv);
-            defender.getWriter().println(pv);
-            
+                String pv = defender.getNom() + " a maintenant " + robotDefender.getPv() + " PV.";
+                attacker.getWriter().println(pv);
+                defender.getWriter().println(pv);
+
+                        
             afficherDegat(attacker, defender, Integer.parseInt(choixAttaque));
-            
+
             String infoApresAttaqueJ = "\nAprès l'attaque de " + attacker.getNom() + ":\n";
             infoApresAttaqueJ += attacker.getNom() + " - " + attacker.getRobotJoueur().toString() + "\n";
             infoApresAttaqueJ += defender.getNom() + " - " + defender.getRobotJoueur().toString();
@@ -354,11 +380,13 @@ public class Controleur
     /**
      * Renvoie la liste des robots au format String
      */
-    public String getRobotsAsString() 
+    public String getRobotsAvailableAsString() 
     {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ensRobot.size(); i++) 
-            sb.append(i).append(". ").append(ensRobot.get(i).toString()).append("\n");
+        {
+            sb.append(i).append(". ").append(ensRobot.get(i)).append("\n");
+        }
         return sb.toString();
     }
 
@@ -407,7 +435,7 @@ public class Controleur
                 ligneAttaque    = sc.nextLine();
                 nom             = ligneAttaque.substring(0,30 );
                 degat           = Integer.parseInt(ligneAttaque.substring(30, 32).trim());
-                precision        = Integer.parseInt(ligneAttaque.substring(34, 36).trim());
+                precision       = Integer.parseInt(ligneAttaque.substring(34, 36).trim());
                 indiceRobot     = Integer.parseInt(ligneAttaque.substring(37).trim());
 
                 this.ensAttaque           .add       (new Attaque( nom.trim(), degat, precision));

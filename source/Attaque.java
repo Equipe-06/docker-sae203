@@ -1,23 +1,23 @@
 public class Attaque
 {
-    private String nom;
-    private int    degat;
-    private int    precision;
+    private String  nom;
+    private int     degat;
+    private int  precision;
 
     public Attaque(String nom, int degat, int precision)
     {  
-        this.nom       = nom;
-        this.degat     = degat;
-        this.precision = precision;
+        this.nom            = nom;
+        this.degat          = degat;
+        this.precision      = precision;
     }
 
     /* ---------------------- */
     /*         Getteur        */
     /* ---------------------- */
 
-    public String getNom      (){ return this.nom;       }
-    public int    getDegat    (){ return this.degat;     }
-    public int    getPrecison (){ return this.precision; }
+    public String   getNom()     { return this.nom;       }
+    public int      getDegat()   { return this.degat;     }
+    public int      getPrecison(){ return this.precision; }
 
 
     /* ---------------------- */
@@ -25,7 +25,8 @@ public class Attaque
     /* ---------------------- */
     public String toString()
     {
-        return "Attaque: " + this.nom + " Dégât: " + this.degat;
+        return "Attaque: " +String.format("%-20s", this.nom)  + String.format("%6s", " Dégât: ") +
+                String.format("%2d", this.degat) + "   précision : " + this.precision;
     }
 
 }
