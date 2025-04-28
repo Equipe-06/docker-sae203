@@ -103,5 +103,6 @@ Attaque: Missile Sonic Dégat: 15.0
 
 - **Millereux Bienvault William* - [GitHub](https://github.com/Falcrom37)
 
-**- **Leprevost Lucas* – [GitHub](https://github.com/LucasLeprevost)
+- **Leprevost Lucas* – [GitHub](https://github.com/LucasLeprevost)
+- --
  
