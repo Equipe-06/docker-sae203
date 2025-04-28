@@ -5,6 +5,15 @@ import java.io.FileInputStream;
 
 public class Controleur 
 {   
+    // COULEUR 
+    public static final String RESET = "\u001B[0m";
+    public static final String ROUGE = "\u001B[31m";
+    public static final String VERT  = "\u001B[32m";
+    public static final String JAUNE = "\u001B[33m";
+    public static final String BLEU  = "\u001B[34m";
+    public static final String CYAN  = "\u001B[36m";;
+
+    // Attributs
     private Joueur  joueur1;
     private Joueur  joueurServeur;
 
@@ -15,32 +24,21 @@ public class Controleur
 
     public Controleur()
     {
-        this.serveur = new Serveur(this);
+        this.serveur    = new Serveur(this);
+        
+        this.ensAttaque = new ArrayList<>();
+        this.ensRobot   = new ArrayList<>();
 
         this.startGame();
     }
 
     /* ---------------------- */
-    /*         Getteur        */
-    /* ---------------------- */
-    public Joueur getJoueur1      () { return this.joueur1;       }
-    public Joueur getJoueurServeur() { return this.joueurServeur; }
-
-    /* ---------------------- */
     /* Afficher Robot/Attaque */
     /* ---------------------- */
-    private void afficherTousRobot()
+    private void afficherRobots()
     {
         for (Robot robot : this.ensRobot ) 
             System.out.println( robot );
-    }
-
-    public String afficherToutesAttaques()
-    {
-        String sRet= "";
-        for (Attaque atta : this.ensAttaque ) 
-            sRet += atta.toString();
-        return sRet;
     }
     
     /* ---------------------- */
@@ -48,74 +46,96 @@ public class Controleur
     /* ---------------------- */
 
     private void startGame()
-    {   
-        // Variables
-        // ---------
-        Joueur serv   = new Joueur("BOT");
-        Joueur j1     = null;
-        
-        int     tours = 1;    
+{   
+    this.initRobot();
+    this.initAttaque();
+    
+    Joueur serv = new Joueur("Boss - Philippe LePivert", this);
+    Joueur j1 = null;
+    
+    int tours = 1;    
 
-        // J1 choisit le nom de son robot
-        // ------------------------------
-        System.out.println("Veuillez choisir votre prénom : ");
-        Scanner scanner = new Scanner(System.in);
-        String  nom   = scanner.nextLine();
-        j1 = new Joueur( nom );
+    // J1 fournit son nom
+    System.out.print(BLEU + "Veuillez choisir votre prénom : " + RESET);
+    Scanner scanner = new Scanner(System.in);
+    String nom = scanner.nextLine();
+    j1 = new Joueur(nom, this);
 
-        // J1 choisit son robot
-        // --------------------
-        System.out.println("Veuillez choisir votre robot : ");
-        this.afficherTousRobot();
-        scanner = new Scanner(System.in);
-        String  numero   = scanner.nextLine();
-        j1.choixRobot( numero );
+    // J1 choisit son robot
+    System.out.print(BLEU + "Veuillez choisir votre robot : " + RESET);
+    this.afficherRobots();
+    scanner = new Scanner(System.in);
+    String nomRobot = scanner.nextLine();
+    j1.choixRobot(nomRobot);
 
-        // Jeu 
-        // ----
-        while ( j1.getRobot().getPv() > 0 || serv.getRobot().getPv() > 0 )
+    // Serveur choisit son robot aléatoirement
+    serv.choixRobot("" + (int) (Math.random() * 6));
+
+    // Boucle du jeu
+    while (j1.getRobotJoueur().getPv() > 0 && serv.getRobotJoueur().getPv() > 0)
+    {
+        System.out.println(JAUNE + "\n********     Tours : " + tours + "     *******" + RESET);
+        System.out.println(CYAN + serv + RESET);
+        System.out.println(VERT + j1 + RESET);
+
+        if (j1.getRobotJoueur().getVit() < serv.getRobotJoueur().getVit())
         {
-            System.out.println("********     Tours : " + tours + "     *******");
-            System.out.println(serv);
-            System.out.println(j1);
+            // Serveur attaque
+            serv.choixAttaque(j1, "" + (int) (Math.random() * 3));
 
-            if ( j1.getRobot().getVit() < serv.getRobot().getVit() )
-            {
-                // Attaque du serveur ( il attaque aleatoirement entre 3 attaque du robot )
-                serv.choixAttaque(j1,""+(int) (Math.random() * 3))  ;
+            if (j1.getRobotJoueur().getPv() <= 0)
+                break;
 
-                if(j1.getRobot().getPv() <= 0)
-                    break;                
-
-                // Attaque du joueur apres le serveur ( il fait son choix lui mm )
-                System.out.println( j1.afficherTousAttaques() );
-                String  input   = scanner.nextLine();
-                j1.choixAttaque(serv, input);
-            }
-            else
-            {
-                // Attaque du joueur ( il fait son choix lui mm )
-                System.out.println( j1.afficherToutesAttaques() );
-                String  input   = scanner.nextLine();
-                j1.choixAttaque(serv, input);
-                
-                if(serv.getRobot().getPv() <= 0)
-                    break;
-                
-                // Attaque du serveur ( il attaque aleatoirement entre 3 attaque du robot )
-                serv.choixAttaque(j1, ""+(int) (Math.random() * 3));                     
-            }
-
-
-            tours++;            
+            // Joueur attaque
+            System.out.print(BLEU + "Votre tour d'attaquer ! Choisissez une attaque : " + RESET);
+            String input = scanner.nextLine();
+            j1.choixAttaque(serv, input);
         }
-        
-        if ( serv.getRobot().getPv() > 0 ) 
-            System.out.println("GAGNER");
-        else 
-            System.out.println("PERDU");
+        else
+        {
+            // Joueur attaque
+            System.out.print(BLEU + "Votre tour d'attaquer ! Choisissez une attaque : " + RESET);
+            String input = scanner.nextLine();
+            j1.choixAttaque(serv, input);
 
+            if (serv.getRobotJoueur().getPv() <= 0)
+                break;
+
+            // Serveur attaque
+            serv.choixAttaque(j1, "" + (int) (Math.random() * 3));
+        }
+        tours++;
     }
+    
+    // Fin de la partie
+    if (serv.getRobotJoueur().getPv() <= 0)
+    {
+        System.out.println(
+            VERT +
+            "╔══════════════════════════════════╗\n" +
+            "║                                  ║\n" +
+            "║         🎉  VICTOIRE !!!  🎉     ║\n" +
+            "║                                  ║\n" +
+            "╚══════════════════════════════════╝" +
+            RESET
+        );
+        System.out.println(VERT + "Bravo, vous avez gagné la partie !" + RESET);
+    } 
+    else 
+    {
+        System.out.println(
+            ROUGE +
+            "╔══════════════════════════════════╗\n" +
+            "║                                  ║\n" +
+            "║         💀  DÉFAITE...  💀       ║\n" +
+            "║                                  ║\n" +
+            "╚══════════════════════════════════╝" +
+            RESET
+        );
+        System.out.println(ROUGE + "Ne baissez pas les bras, réessayez !" + RESET);
+    }
+}
+
 
     /* ---------------------- */
     /*   Init  Robot/Attaque  */
@@ -125,23 +145,23 @@ public class Controleur
 	{
 		
         String nom, ligneRobot ;
-		int vitesse;
+		int vitesse, indice;
         double pv; 
-
-		this.ensRobot = new ArrayList<Robot>();
 
 		try
 		{
-			Scanner sc 		= new Scanner ( new FileInputStream ( "robot.data" ) );
+			Scanner sc 		= new Scanner ( new FileInputStream ( "robot.data" ), "UTF8" );
 
 
             while ( sc.hasNextLine() )
 			{
 				ligneRobot = sc.nextLine();
-				nom = ligneRobot.substring(0,18 );
-                pv = Double.parseDouble(ligneRobot.substring(18, 24));
-				vitesse = Integer.parseInt(ligneRobot.substring(25));
-				this.ensRobot.add( new Robot( nom.trim(),pv, vitesse )) ;
+
+				nom        = ligneRobot  .substring  (0 , 18                      );
+                pv         = Double      .parseDouble(ligneRobot.substring(18, 24).trim());
+				vitesse    = Integer     .parseInt   (ligneRobot.substring(25   ).trim());
+                
+				this.ensRobot.add( new Robot( nom.trim(), pv, vitesse )) ;
 			}
 
 			sc.close();
@@ -155,30 +175,36 @@ public class Controleur
     {
         
         String nom, ligneAttaque ;
-        double degat; 
-
-		this.ensAttaque = new ArrayList<Attaque>();
+        double degat;
+        int    indiceRobot;
 
 		try
 		{
-			Scanner sc 		= new Scanner ( new FileInputStream ( "attaque.data" ) );
+			Scanner sc 		= new Scanner ( new FileInputStream ( "attaque.data" ), "UTF8" );
 
 
             while ( sc.hasNextLine() )
 			{
-				ligneAttaque = sc.nextLine();
-				nom = ligneAttaque.substring(0,30 );
-                degat = Double.parseDouble(ligneAttaque.substring(30));
-				this.ensAttaque.add( new Attaque( nom.trim(), degat)) ;
+				ligneAttaque    = sc.nextLine();
+                nom             = ligneAttaque.substring(0,30 );
+                degat           = Double.parseDouble(ligneAttaque.substring(30, 36).trim());
+                indiceRobot     = Integer.parseInt(ligneAttaque.substring(37, 38));
+				this.ensAttaque           .add       (new Attaque( nom.trim(), degat, 1));
+                this.getRobot(indiceRobot).addAttaque(new Attaque( nom.trim(), degat, 1));
 			}
 
 			sc.close();
 		}
 		catch (Exception e){ e.printStackTrace(); }
-        
     }
 
-	public Robot getRobot ( int index){ return this.ensRobot.get( index);}
+    /* ---------------------- */
+    /*         Getteur        */
+    /* ---------------------- */
+    public Joueur    getJoueur1      (           ) { return this.joueur1;               }
+    public Joueur    getJoueurServeur(           ) { return this.joueurServeur;         }
+    public Robot     getRobot        ( int index ) { return this.ensRobot.get( index ); }
+    public ArrayList<Robot> getEnsRobot (        ) { return this.ensRobot;              }  
 
     public static void main(String[] args) 
     {
