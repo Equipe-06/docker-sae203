@@ -142,9 +142,6 @@ public class Controleur
             out.println("Voici les robots disponibles:");
             out.println(getRobotsAvailableAsString());
             out.println("Choisissez un robot (entrez le nom complet du robot (sans fautes d'orthographes svp) ):");
-            
-            // On enlève le robot déjà choisit
-            this.ensRobot.remove( j1 );
 
             // Attendre le choix du robot
             String choixRobot = in.readLine();
@@ -152,6 +149,7 @@ public class Controleur
             joueur.choixRobot(choixRobot);
             
             out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
+            this.removeRobot(joueur.getRobotJoueur().getNom());
         }
         return joueur;
     }
@@ -388,6 +386,19 @@ public class Controleur
             sb.append(i).append(". ").append(ensRobot.get(i)).append("\n");
         }
         return sb.toString();
+    }
+
+    public void removeRobot(String nom)
+    {
+        for (int i = 0; i < ensRobot.size(); i++)
+        {
+            if(ensRobot.get(i).getNom().equals(nom))
+            {
+                ensRobot.remove(i);
+                System.out.println("removed");
+                break;
+            }
+        }
     }
 
     /* ---------------------- */
