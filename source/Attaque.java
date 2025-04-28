@@ -21,7 +21,7 @@ public class Attaque
 
     public String toString()
     {
-        return "Attaque: " + this.nom + " Dégat: " + this.degat;
+        return "Attaque: " + this.nom + " Dégt: " + this.degat;
     }
 
 }

@@ -1,15 +1,13 @@
-
-
 public class Joueur
 {
 
     private String nom;
     private Robot robot;
 
-    public Joueur(String nom, Robot robot)
+    public Joueur(String nom)
     {
         this.nom = nom;
-        this.robot = robot;
+        this.robot = null;
     }
     
     public String toString()
@@ -17,26 +15,11 @@ public class Joueur
         return "Joueur :\n" +
                 " - nom: " + this.nom + "\n" +
                 "   Robot : \n" +
-                    " - nom :" + this.robot.getNom() + "\n" +
-                    " - vie :" + this.robot.getPv();
-    }
-
-    public void setNom( String nom )
-    {
-        this.nom = nom;
+                " - nom :" + this.robot.getNom() + "\n" +
+                " - vie :" + this.robot.getPv();
     }
 
     public Robot getRobot() { return this.robot; }
-
-    public String afficherToutesAttaques()
-    {
-        String sRet= "";
-        for(int cpt=0; cpt < this.robot.getAllAttaque().size(); cpt++)
-        {
-            sRet += "#" + cpt + " - " + this.robot.getAllAttaque().get(cpt).toString() + "\n";
-        }
-        return sRet;
-    }
 
     public void choixAttaque(Joueur victim, String input)
     {        
@@ -46,8 +29,20 @@ public class Joueur
         System.out.println(robot.getAttaque( choix ));
 
         // Enlever la vie par rapport à l'attaque
-        victim.getRobot().recevoirAttaque( this.robot.getAttaque( choix ) );
+        victim.getRobot().recevoirAttaque(robot.getAttaque( choix ));
     }
+
+    public void choixRobot(String input)
+    {
+        int choix = Integer.parseInt(input);
+
+        System.out.println(getRobot( choix ));
+
+        
+        this.robot = new Robot(ctrl.getNomRobot(), pv, vit);
+    }
+
+
 
 
     public String getNom() { return this.nom; }
