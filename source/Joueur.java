@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class Joueur
 {
     // Couleurs ANSI
@@ -9,6 +13,10 @@ public class Joueur
     private String     nom;
     private Robot      robot;
     private Controleur ctrl;
+
+    private Socket         socket;
+    private PrintWriter    writer;
+    private BufferedReader reader;
 
     public Joueur(String nom, Controleur ctrl)
     {
@@ -31,6 +39,29 @@ public class Joueur
     public Robot  getRobotJoueur() { return this.robot; }
     public String getNom()         { return this.nom; }
 
+    public Socket getSocket() { 
+        return this.socket; 
+    }
+    
+    public void setSocket(Socket socket) { 
+        this.socket = socket; 
+    }
+    
+    public PrintWriter getWriter() { 
+        return this.writer; 
+    }
+    
+    public void setWriter(PrintWriter writer) { 
+        this.writer = writer; 
+    }
+    
+    public BufferedReader getReader() { 
+        return this.reader; 
+    }
+    
+    public void setReader(BufferedReader reader) { 
+        this.reader = reader; 
+    }
 
     /* ---------------------- */
     /*  Choix Robot/Attaques  */
@@ -43,7 +74,7 @@ public class Joueur
         System.out.println(JAUNE + "Vous avez choisi l'attaque : " + RESET + this.robot.getAttaque(choix));
 
         // Enlever la vie par rapport à l'attaque
-        victim.getRobotJoueur().infligerAttaque(this.robot.getAttaque(choix), this.robot);
+        this.robot.infligerAttaque(this.robot.getAttaque(choix), victim.getRobotJoueur());
     }
 
     public void choixRobot(String input)

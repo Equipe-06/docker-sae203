@@ -1,24 +1,24 @@
-Laser Éclair                   10.0  0
-Missile Sonic                  15.0  1
-Coup de Fer                    8.0   2
-Rayon Plasma                   12.5  3
-Poing Titane                   9.5   4
-Éclair Photonique              14.0  5
-Onde de Choc                   11.2  0
-Tir Rapide                     7.8   1
-Bombe Gravitationnelle         18.0  2
-Lame Solaire                   13.3  3
-Impact Sidéral                 16.5  4
-Charge Quantique               17.0  5
-Frappe Thermique               12.0  0
-Vortex Laser                   19.0  1
-Sabre Magnétique               10.5  2
-Choc Cryogénique               8.5   3
-Missiles Hydra                 16.0  4
-Explosion Ionique              20.0  5
-Rayon Gamma                    18.5  0
-Canon Arctique                 11.0  1
-Rafale Plasma                  13.8  2
-Bouclier Percutant             7.0   3
-Frappe Oméga                   19.5  4
-Assaut Mécanique               9.8   5
+Laser Éclair                  10  95 0
+Missile Sonic                 15  75 1
+Coup de Fer                   8   98 2
+Rayon Plasma                  12  90 3
+Poing Titane                  9   96 4
+Éclair Photonique             14  85 5
+Onde de Choc                  11  92 0
+Tir Rapide                    7   99 1
+Bombe Gravitationnelle        18  60 2
+Lame Solaire                  13  88 3
+Impact Sidéral                16  72 4
+Charge Quantique              17  68 5
+Frappe Thermique              12  90 0
+Vortex Laser                  19  55 1
+Sabre Magnétique              10  95 2
+Choc Cryogénique              8   97 3
+Missiles Hydra                16  70 4
+Explosion Ionique             20  50 5
+Rayon Gamma                   18  60 0
+Canon Arctique                11  92 1
+Rafale Plasma                 13  88 2
+Bouclier Percutant            7   99 3
+Frappe Oméga                  19  55 4
+Assaut Mécanique              9   97 5
