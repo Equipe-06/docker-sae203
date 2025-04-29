@@ -36,20 +36,6 @@ public class Controleur
     public static final String GRAS         = "\u001B[1m" ;  
     public static final String SOULIGNE     = "\u001B[4m" ;  
 
-    // Identifiants des messages
-    public static final String MSG_GAME_START     = "GAME:START";
-    public static final String MSG_TURN_INFO      = "TURN:INFO";
-    public static final String MSG_POSITION_INFO  = "INFO:POSITIONS";
-    public static final String MSG_ATTACK_REQUEST = "INPUT:ATTACK";
-    public static final String MSG_MOVE_REQUEST   = "INPUT:MOVE";
-    public static final String MSG_MOVE_RESULT    = "INFO:MOVE_RESULT";
-    public static final String MSG_ATTACK_SUCCESS = "INFO:ATTACK_SUCCESS";
-    public static final String MSG_ATTACK_FAIL    = "INFO:ATTACK_FAIL";
-    public static final String MSG_ATTACK_RESULT  = "INFO:ATTACK_RESULT";
-    public static final String MSG_ERROR          = "ERROR:";
-    public static final String MSG_END_VICTORY    = "END:VICTORY";
-    public static final String MSG_END_DEFEAT     = "END:DEFEAT";
-
     // Port du serveur
     private static final int PORT = 9000;
 
@@ -158,8 +144,8 @@ public class Controleur
         PrintWriter out1 = j1.getWriter();
         PrintWriter out2 = j2.getWriter();
     
-        out1.println(MSG_GAME_START + j2.getNom());
-        out2.println(MSG_GAME_START + j1.getNom());
+        out1.println("La partie commence " + j2.getNom());
+        out2.println("La partie commence " + j1.getNom());
     
         int tours = 1;
         boolean j2Joue = j1.getRobotJoueur().getVit() < j2.getRobotJoueur().getVit();
@@ -204,21 +190,19 @@ public class Controleur
         catch (IOException e) 
         {
             System.out.println(ROUGE + "Erreur lors de la partie: " + e.getMessage() + RESET);
-            out1.println(MSG_ERROR + "Une erreur est survenue pendant la partie.");
-            out2.println(MSG_ERROR + "Une erreur est survenue pendant la partie.");
+            out1.println("Une erreur est survenue pendant la partie.");
+            out2.println("Une erreur est survenue pendant la partie.");
         }
     }
     
 
     private void afficherVictoire(Joueur joueur) 
     {
-        joueur.getWriter().println(MSG_END_VICTORY);
         joueur.getWriter().println(VERT + CADRE_VICTOIRE + RESET);
     }
 
     private void afficherDefaite(Joueur joueur) 
     {
-        joueur.getWriter().println(MSG_END_DEFEAT);
         joueur.getWriter().println(ROUGE + CADRE_DEFAITE + RESET);
     }
     
@@ -291,10 +275,10 @@ public class Controleur
             "Distance actuelle entre eux : " + calculerDistance(r1, r2) + RESET;
 
         // Afficher avec identifiant
-        out1.println(MSG_POSITION_INFO + infosPositions);
+        out1.println(infosPositions);
         out1.println(new String(barre));
 
-        out2.println(MSG_POSITION_INFO + infosPositions);
+        out2.println(infosPositions);
         out2.println(new String(barre));
     }
 
@@ -326,7 +310,7 @@ public class Controleur
     
                 if (Math.abs(deplacement) > maxDep || deplacement % 25 != 0 || deplacement == 0) 
                 {
-                    attacker.getWriter().println(MSG_ERROR + "INVALID_MOVE");
+                    attacker.getWriter().println("INVALID_MOVE");
                     processAttack(attacker, defender);
                     return;
                 }
@@ -346,11 +330,11 @@ public class Controleur
     
             if (totalDegats > 0) 
             {
-                attacker.getWriter().println(MSG_ATTACK_SUCCESS);
+                attacker.getWriter().println("L'attaque à été effectué avec succès !");
             } 
             else 
             {
-                attacker.getWriter().println(MSG_ATTACK_FAIL);
+                attacker.getWriter().println("L'attaque à échoué !");
             }
     
             afficherDegat(attacker, defender, attaque, totalDegats);
@@ -358,7 +342,7 @@ public class Controleur
         } 
         catch (NumberFormatException | IndexOutOfBoundsException e) 
         {
-            attacker.getWriter().println(MSG_ERROR + "INVALID_CHOICE");
+            attacker.getWriter().println("INVALID_CHOICE");
             processAttack(attacker, defender);
         }
     }
