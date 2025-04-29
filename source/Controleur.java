@@ -36,6 +36,19 @@ public class Controleur
     public static final String GRAS         = "\u001B[1m" ;  
     public static final String SOULIGNE     = "\u001B[4m" ;  
 
+    // Identifiants des messages
+    public static final String MSG_GAME_START     = "GAME:START";
+    public static final String MSG_TURN_INFO      = "TURN:INFO";
+    public static final String MSG_POSITION_INFO  = "INFO:POSITIONS";
+    public static final String MSG_ATTACK_REQUEST = "INPUT:ATTACK";
+    public static final String MSG_MOVE_REQUEST   = "INPUT:MOVE";
+    public static final String MSG_MOVE_RESULT    = "INFO:MOVE_RESULT";
+    public static final String MSG_ATTACK_SUCCESS = "INFO:ATTACK_SUCCESS";
+    public static final String MSG_ATTACK_FAIL    = "INFO:ATTACK_FAIL";
+    public static final String MSG_ATTACK_RESULT  = "INFO:ATTACK_RESULT";
+    public static final String MSG_ERROR          = "ERROR:";
+    public static final String MSG_END_VICTORY    = "END:VICTORY";
+    public static final String MSG_END_DEFEAT     = "END:DEFEAT";
 
     // Port du serveur
     private static final int PORT = 9000;
@@ -44,7 +57,6 @@ public class Controleur
     private ArrayList<Attaque>  ensAttaque;
     private ArrayList<Robot>    ensRobot;
     private ServerSocket        serverSocket;
-    private int                 nombreJoueurs;
 
     private Joueur              j1;
     private Joueur              j2;
@@ -53,14 +65,12 @@ public class Controleur
     {
         this.ensAttaque    = new ArrayList<>();
         this.ensRobot      = new ArrayList<>();
-        this.nombreJoueurs = 0;
         this.j1            = null;
         this.j2            = null;
 
         this.initRobot();
         this.initAttaque();
 
-        // Démarrer le serveur
         startServer();
     }
 
@@ -77,11 +87,11 @@ public class Controleur
             System.out.println(JAUNE + "En attente de joueurs (2 nécessaires pour commencer)..." + RESET);
             System.out.println(JAUNE + "En attente du premier joueur..." + RESET);
             Socket socketJ1 = serverSocket.accept();
-            this.j1 = connecterJoueur(socketJ1, "Joueur 1");
+            this.j1         = connecterJoueur(socketJ1, "Joueur 1");
 
             System.out.println(JAUNE + "Premier joueur connecté! En attente du second joueur..." + RESET);
             Socket socketJ2 = serverSocket.accept();
-            this.j2 = connecterJoueur(socketJ2, "Joueur 2");
+            this.j2         = connecterJoueur(socketJ2, "Joueur 2");
 
             System.out.println(VERT + "Deux joueurs connectés! Démarrage de la partie." + RESET);
 
@@ -115,23 +125,22 @@ public class Controleur
      */
     private Joueur connecterJoueur(Socket socket, String defaultName) throws IOException 
     {
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        PrintWriter    out = new PrintWriter(socket.getOutputStream(), true);
+        BufferedReader in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        out.println("Bienvenue au jeu de combat de robots!");
-        out.println("Veuillez entrer votre nom:");
+        out.println("CREATING_PLAYER:" + getRobotsAvailableAsString());
 
         String nomJoueur = in.readLine();
         if (nomJoueur == null || nomJoueur.trim().isEmpty()) 
             nomJoueur = defaultName;
 
-        Joueur joueur = new Joueur(nomJoueur, this);
-        joueur.setSocket(socket);
-        joueur.setWriter(out);
-        joueur.setReader(in);
+        String choixRobot = in.readLine();
+        Joueur joueur = new Joueur(nomJoueur, this, socket, out, in);
+        joueur.choixRobot(choixRobot);
 
-        out.println("Bonjour " + nomJoueur + "!");
+        this.removeRobot(joueur.getRobotJoueur().getNom());
 
+<<<<<<< HEAD
         while (joueur.getRobotJoueur() == null) 
         {
             out.println("Voici les robots disponibles:");
@@ -145,6 +154,8 @@ public class Controleur
             this.removeRobot(joueur.getRobotJoueur().getNom());
             out.println("Attendez votre adversaire");
         }
+=======
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         return joueur;
     }
     
@@ -156,8 +167,8 @@ public class Controleur
         PrintWriter out1 = j1.getWriter();
         PrintWriter out2 = j2.getWriter();
     
-        out1.println("Début de la partie contre " + j2.getNom());
-        out2.println("Début de la partie contre " + j1.getNom());
+        out1.println(MSG_GAME_START + j2.getNom());
+        out2.println(MSG_GAME_START + j1.getNom());
     
         int tours = 1;
         boolean j2Joue = j1.getRobotJoueur().getVit() < j2.getRobotJoueur().getVit();
@@ -166,6 +177,7 @@ public class Controleur
         {
             while (j1.getRobotJoueur().getPv() > 0 && j2.getRobotJoueur().getPv() > 0) 
             {
+<<<<<<< HEAD
                 String infoTour = JAUNE + GRAS + "\n********     Tour : " + tours + "     *******\n" + RESET;
                 
                 out1.println(infoTour +
@@ -175,16 +187,15 @@ public class Controleur
                 out2.println(infoTour +
                              VERT + SOULIGNE + "Votre Robot   :" + RESET + "\n" + j2.getRobotJoueur() + "\n" +
                              VERT + SOULIGNE + "Robot Ennemie :" + RESET + "\n" + j1.getRobotJoueur()         );
+=======
+                String infoTour = MSG_TURN_INFO + tours;
+                out1.println(infoTour);
+                out2.println(infoTour);
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     
                 // ➔ Un seul joueur joue par tour
-                if (j2Joue)
-                {
-                    processAttack(j2, j1);
-                }
-                else
-                {
-                    processAttack(j1, j2);
-                }
+                if (j2Joue) processAttack(j2, j1);
+                else        processAttack(j1, j2);
     
                 // ➔ Après un coup, on passe la main
                 j2Joue = !j2Joue;
@@ -208,24 +219,27 @@ public class Controleur
         catch (IOException e) 
         {
             System.out.println(ROUGE + "Erreur lors de la partie: " + e.getMessage() + RESET);
-            out1.println("Une erreur est survenue pendant la partie.");
-            out2.println("Une erreur est survenue pendant la partie.");
+            out1.println(MSG_ERROR + "Une erreur est survenue pendant la partie.");
+            out2.println(MSG_ERROR + "Une erreur est survenue pendant la partie.");
         }
     }
     
 
     private void afficherVictoire(Joueur joueur) 
     {
+        joueur.getWriter().println(MSG_END_VICTORY);
         joueur.getWriter().println(VERT + CADRE_VICTOIRE + RESET);
     }
 
     private void afficherDefaite(Joueur joueur) 
     {
+        joueur.getWriter().println(MSG_END_DEFEAT);
         joueur.getWriter().println(ROUGE + CADRE_DEFAITE + RESET);
     }
     
     private void afficherDegat(Joueur jAtt, Joueur jDef, Attaque attaque, int degatsTotal)
     {
+<<<<<<< HEAD
         jAtt.getWriter().println(
             String.format("%-15s", jAtt.getNom()) + " attaque avec : " + BLEU_CLAIR + attaque.getNom() + RESET + "\n" +
             String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
@@ -237,6 +251,16 @@ public class Controleur
             String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
             "PV restants pour " + jDef.getNom() + ": " + BLEU_CLAIR + jDef.getRobotJoueur().getPv() + RESET + "\n"
         );
+=======
+        Attaque attaque = jAtt.getRobotJoueur().getAttaque(numAttaqueRobot);
+
+        String infoAttaque = jAtt.getNom() + ";" + attaque.getNom() + ";" + 
+                             jDef.getNom() + ";" + attaque.getDegatMax() + ";" + 
+                             attaque.getDegatMin() + ";" + jDef.getRobotJoueur().getPv();
+
+        jAtt.getWriter().println(MSG_ATTACK_RESULT + infoAttaque);
+        jDef.getWriter().println(MSG_ATTACK_RESULT + infoAttaque);
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     }
 
 
@@ -249,8 +273,8 @@ public class Controleur
         Robot r1 = j1.getRobotJoueur();
         Robot r2 = j2.getRobotJoueur();
 
-        int min = -2000;
-        int max = 2000;
+        int min     = -2000;
+        int max     = 2000;
         int largeur = 80; // Largeur totale de la barre
 
         int pos1 = r1.getPosition();
@@ -286,22 +310,25 @@ public class Controleur
                 repere.append(" ");
         }
 
+<<<<<<< HEAD
         // Infos sur les positions
         String infosPositions = CYAN +
             "Position de " + j1.getNom() + "(n°1) : " + r1.getPosition() + "\n" +
             "Position de " + j2.getNom() + "(n°2) : " + r2.getPosition() + "\n" +
             "Distance actuelle entre eux : " + calculerDistance(r1, r2) + RESET;
+=======
+        // Infos sur les positions au format simplifié
+        String infosPositions = j1.getNom() + ";" + r1.getPosition() + ";" +
+                               j2.getNom() + ";" + r2.getPosition() + ";" +
+                               calculerDistance(r1, r2);
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
 
-        // Afficher
-        out1.println(infosPositions);
-        out1.println(JAUNE + repere.toString() + RESET);
+        // Afficher avec identifiant
+        out1.println(MSG_POSITION_INFO + infosPositions);
         out1.println(new String(barre));
-        out1.println();
 
-        out2.println(infosPositions);
-        out2.println(JAUNE + repere.toString() + RESET);
+        out2.println(MSG_POSITION_INFO + infosPositions);
         out2.println(new String(barre));
-        out2.println();
     }
 
     /**
@@ -310,9 +337,15 @@ public class Controleur
     private void processAttack(Joueur attacker, Joueur defender) throws IOException 
     {
         afficherPositions(attacker, defender);
+<<<<<<< HEAD
     
         attacker.getWriter().println("C'est votre tour d'attaquer! Choisissez une attaque (0-" + (attacker.getRobotJoueur().getAttaques().size() - 1) + "):");
     
+=======
+
+        attacker.getWriter().println(MSG_ATTACK_REQUEST + "0;" + (attacker.getRobotJoueur().getAttaques().size() - 1));
+
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         try 
         {
             String choixAttaque = attacker.getReader().readLine();
@@ -324,39 +357,61 @@ public class Controleur
             {
                 Robot robot = attacker.getRobotJoueur();
                 int maxDep = robot.getDeplacement();
+<<<<<<< HEAD
     
                 attacker.getWriter().println("Choisissez une distance de déplacement (par pas de 25, entre -" + maxDep + " et +" + maxDep + ", sans 0):");
     
+=======
+
+                attacker.getWriter().println(MSG_MOVE_REQUEST + "-" + maxDep + ";" + maxDep);
+
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
                 String choixDep = attacker.getReader().readLine();
                 int deplacement = Integer.parseInt(choixDep);
     
                 if (Math.abs(deplacement) > maxDep || deplacement % 25 != 0 || deplacement == 0) 
                 {
-                    attacker.getWriter().println(ROUGE + "Déplacement invalide, réessayez." + RESET);
+                    attacker.getWriter().println(MSG_ERROR + "INVALID_MOVE");
                     processAttack(attacker, defender);
                     return;
                 }
     
                 robot.setPosition(robot.getPosition() + deplacement);
+<<<<<<< HEAD
                 attacker.getWriter().println(VERT + "Vous vous êtes déplacé de " + deplacement + " unités." + RESET);
     
                 // Aucun appel à afficherDegat ici pour un déplacement !
+=======
+                attacker.getWriter().println(MSG_MOVE_RESULT + deplacement);
+
+                // ➔ Affiche la nouvelle situation après déplacement
+                afficherDegat(attacker, defender, indexAttaque);
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
                 return;
             }
     
             // Sinon, attaque normale
             int distance = calculerDistance(attacker.getRobotJoueur(), defender.getRobotJoueur());
+<<<<<<< HEAD
             attacker.getWriter().println("Distance actuelle entre vous et l'adversaire : " + distance);
     
             int totalDegats = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
     
             if (totalDegats > 0) 
+=======
+            attacker.getWriter().println(MSG_POSITION_INFO + attacker.getNom() + ";" + attacker.getRobotJoueur().getPosition() + ";" +
+                                       defender.getNom() + ";" + defender.getRobotJoueur().getPosition() + ";" + distance);
+
+            boolean bAttaque = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
+
+            if (bAttaque) 
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
             {
-                attacker.getWriter().println(VERT + "Attaque réussie !" + RESET);
+                attacker.getWriter().println(MSG_ATTACK_SUCCESS);
             } 
             else 
             {
-                attacker.getWriter().println(ROUGE + "L'attaque a échoué." + RESET);
+                attacker.getWriter().println(MSG_ATTACK_FAIL);
             }
     
             afficherDegat(attacker, defender, attaque, totalDegats);
@@ -364,7 +419,7 @@ public class Controleur
         } 
         catch (NumberFormatException | IndexOutOfBoundsException e) 
         {
-            attacker.getWriter().println(ROUGE + "Erreur: Veuillez entrer un choix valide." + RESET);
+            attacker.getWriter().println(MSG_ERROR + "INVALID_CHOICE");
             processAttack(attacker, defender);
         }
     }
@@ -403,7 +458,11 @@ public class Controleur
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ensRobot.size(); i++) 
         {
+<<<<<<< HEAD
             sb.append(ensRobot.get(i)).append("\n");
+=======
+            sb.append(ensRobot.get(i).getNom()).append("&");
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         }
         return sb.toString();
     }
@@ -426,7 +485,7 @@ public class Controleur
 
     private void initRobot() 
     {
-        try (Scanner sc = new Scanner(new FileInputStream("robot.data"), "UTF8")) 
+        try (Scanner sc = new Scanner(new FileInputStream("data/robot.data"), "UTF8")) 
         {
             while (sc.hasNextLine()) 
             {
@@ -448,7 +507,11 @@ public class Controleur
 
     private void initAttaque() 
     {
+<<<<<<< HEAD
         try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
+=======
+        try (Scanner sc = new Scanner(new FileInputStream("data/attaque.data"), "UTF8")) 
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         {
             while (sc.hasNextLine()) 
             {

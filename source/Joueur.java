@@ -23,11 +23,15 @@ public class Joueur
     private PrintWriter     writer;
     private BufferedReader  reader;
 
-    public Joueur(String nom, Controleur ctrl)
+    public Joueur(String nom, Controleur ctrl, Socket socket, PrintWriter writer, BufferedReader reader)
     {
-        this.nom   = nom;
-        this.ctrl  = ctrl;
-        this.robot = null;
+        this.nom    = nom;
+        this.ctrl   = ctrl;
+        this.socket = socket;
+        this.writer = writer;
+        this.reader = reader;
+
+        this.robot  = null;
     }
 
     public String toString()
@@ -41,33 +45,26 @@ public class Joueur
     /*         Getteurs        */
     /* ---------------------- */
 
-    public Robot getRobotJoueur() { return this.robot; }
-    public String getNom()        { return this.nom; }
+    public Robot getRobotJoueur    () { return this.robot ; }
+    public String getNom           () { return this.nom   ; }
 
-    public Socket getSocket() { return this.socket; }
-    public void setSocket(Socket socket) { this.socket = socket; }
+    public Socket getSocket        () { return this.socket; }
 
-    public PrintWriter getWriter() { return this.writer; }
-    public void setWriter(PrintWriter writer) { this.writer = writer; }
+    public PrintWriter getWriter   () { return this.writer; }
 
     public BufferedReader getReader() { return this.reader; }
-    public void setReader(BufferedReader reader) { this.reader = reader; }
 
     /* ---------------------- */
     /*  Choix Robot           */
     /* ---------------------- */
     public void choixRobot(String input)
     {
-        int index = -1;
 
-        for (int i = 0; i < ctrl.getEnsRobot().size(); i++)
-        {
-            if (ctrl.getEnsRobot().get(i).getNom().equalsIgnoreCase(input))
-            {
-                index = i;
-                break;
-            }
-        }
+        int index = ctrl.getEnsRobot().stream()
+                        .map(Robot::getNom)
+                        .map(String::toLowerCase)
+                        .toList()
+                        .indexOf(input.toLowerCase());
 
         if (index != -1)
         {

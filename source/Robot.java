@@ -12,6 +12,7 @@ public class Robot
     public static final String SOULIGNE = "\u001B[4m";
 
     private String nom;
+
     private int pv;
     private int vitesse;
     private int deplacement;
@@ -25,6 +26,7 @@ public class Robot
         this.pv = pv;
         this.vitesse = vitesse;
         this.deplacement = deplacement;
+<<<<<<< HEAD
         this.position = 0;
         this.ensAttaque = new ArrayList<>();
     }
@@ -40,6 +42,40 @@ public class Robot
     public void addAttaque(Attaque attaque) { this.ensAttaque.add(attaque); }
 
     public int infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
+=======
+        this.position    = 0;
+        this.ensAttaque  = new ArrayList<>();
+    }
+
+    /* ---------------------- */
+    /*         Getteurs        */
+    /* ---------------------- */
+    public ArrayList<Attaque> getAttaques         () { return this.ensAttaque           ; }
+    public Attaque            getAttaque (int index) { return this.ensAttaque.get(index); }
+    public int                getPv               () { return this.pv                   ; }
+    public int                getVit              () { return this.vitesse              ; }
+    public String             getNom              () { return this.nom                  ; }
+    public int                getDeplacement      () { return this.deplacement          ; }
+    public int                getPosition         () { return this.position             ; }
+
+    /* ---------------------- */
+    /*         Setteurs       */
+    /* ---------------------- */
+    public void setPosition(int position) 
+    { 
+        this.position = position; 
+    }
+
+    /* ---------------------- */
+    /*     Autres méthodes    */
+    /* ---------------------- */
+    public void addAttaque(Attaque attaque) 
+    { 
+        this.ensAttaque.add(attaque); 
+    }
+
+    public boolean infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     {
         int degatsInfliges;
         int precisionTir;
@@ -73,7 +109,13 @@ public class Robot
             }
         }
 
+<<<<<<< HEAD
         return totalDegats;
+=======
+        System.out.print(tirFeedback);
+
+        return auMoinsUnTouche;
+>>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     }
 
     public void subirDegats(int degats)
