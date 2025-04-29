@@ -42,58 +42,11 @@ Le but du jeu est de réduire les PV de l'adversaire à zéro avant de perdre le
    javac *.java
    ```
 
-2. **Exécuter** la classe principale `Controleur` :
+2. **Exécuter** la classe principale `Client` :
    ```bash
-   java Controleur
+   java Client
    ```
 
----
-
-## 📷 Exemple de Fonctionnement
-
-```bash
-Veuillez choisir le nom de votre Robot :
-> TitanX
-
-==============================================================
-Joueur :
- - nom: serveur
-   Robot :
-    - nom :
-    - vie :20.0
-Joueur :
- - nom: joueur1
-   Robot :
-    - nom :TitanX
-    - vie :10.5
-
-#0 - Attaque: Laser Éclair Dégat: 10.0
-#1 - Attaque: Missile Sonic Dégat: 15.0
-#2 - Attaque: Coup de Fer Dégat: 8.0
-
-> 1
-Attaque: Missile Sonic Dégat: 15.0
-...
-```
-
----
-
-## ⚠️ Remarques
-
-- Pour l'instant, les attaques sont **codées en dur** dans `Robot.java`.
-- Le système de fichier pour charger les attaques (`attaque.data`) est présent mais commenté.
-- Le projet nécessite une classe **Serveur** non fournie ici.
-
----
-
-## ✏️ À améliorer
-
-- Ajouter la classe `Serveur`.
-- Lire les attaques depuis un fichier externe (`attaque.data`).
-- Améliorer l'interface utilisateur.
-- Ajouter une gestion d'erreurs sur les entrées utilisateur.
-
----
 
 ## 🧑‍💻 Auteur
 
