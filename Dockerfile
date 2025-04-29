@@ -12,4 +12,4 @@ RUN javac -encoding UTF-8 -d class @Compile.list
 
 EXPOSE 9000
 
-ENTRYPOINT ["java", "-cp", "class", "Controleur"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-cp", "class", "Controleur"]

@@ -128,7 +128,8 @@ public class Controleur
         PrintWriter    out = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        out.println("CREATING_PLAYER:" + getRobotsAvailableAsString());
+        out.println("Bienvenue au jeu de combat de robots!");
+        out.println("Veuillez entrer votre nom:");
 
         String nomJoueur = in.readLine();
         if (nomJoueur == null || nomJoueur.trim().isEmpty()) 
@@ -441,7 +442,7 @@ public class Controleur
 
     private void initAttaque() 
     {
-        try (Scanner sc = new Scanner(new FileInputStream("/data/attaque.data"), "UTF8")) 
+        try (Scanner sc = new Scanner(new FileInputStream("data/attaque.data"), "UTF8")) 
         {
             while (sc.hasNextLine()) 
             {
