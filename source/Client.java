@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class Client 
 {
-    private static final String SERVER_IP = "127.0.0.1";
-    private static final int SERVER_PORT = 9000;
+    private static final String SERVER_IP = "5.tcp.eu.ngrok.io";
+    private static final int SERVER_PORT = 12108;
 
     public static void main(String[] args) 
     {
@@ -24,25 +24,33 @@ public class Client
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Scanner scanner = new Scanner(System.in);
 
+            // Thread pour lire les messages du serveur ( Obligatoire si on veut pas bloquer le terminal )
+            Thread receiveThread = new Thread(() -> {
+                try 
+                {
+                    String serverResponse;
+                    while ( (serverResponse = in.readLine() ) != null) 
+                    {
+                        try { Thread.sleep(50); } catch (Exception e) {}
+                        System.out.println(serverResponse);
+                    }   
+                    
+                } 
+                catch (IOException e) { System.out.println("Erreur réception: " + e.getMessage()); }
+            });
+            receiveThread.start();
+
+            // Boucle principale pour envoyer des messages
             while (true) 
             {
-                if (System.in.available() > 0) 
-                {
-                    String userInput = scanner.nextLine();
-                    out.println(userInput);
-                }
-
-                if (in.ready()) 
-                {
-                    String serverResponse = in.readLine();
-                    System.out.println(serverResponse);
-                }
-
-                Thread.sleep(50);
+                String userInput = scanner.nextLine();
+                out.println(userInput);
             }
 
+            
+
         } 
-        catch (IOException | InterruptedException e) 
+        catch (IOException e) 
         {
             System.out.println("Erreur: " + e.getMessage());
         }
