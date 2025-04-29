@@ -147,15 +147,7 @@ java Client
 - Damestoy Ethan – GitHub  
 - Leclerc Jonathan – GitHub  
 - Millereux Bienvault William – GitHub  
-- Leprevost Lucas – GitHub  
-
----
-
-## 🔗 Liens utiles
-
-- 🌐 [Site web du projet](https://Equipe-06.github.io/docker-sae203/index.md)
-- 📂 [Dépôt GitHub](https://github.com/equipe-06/docker-sae203/)
-
----
-
-*Projet réalisé dans le cadre de la SAE 2.03 à l’IUT du Havre — BUT Informatique 2ᵉ année.*
+- Leprevost Lucas – GitHub
+-   
+-- 
+*Projet réalisé dans le cadre de la SAE 2.03 à l’IUT du Havre — BUT Informatique 1ᵉ année.*
