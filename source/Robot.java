@@ -12,6 +12,7 @@ public class Robot
     public static final String SOULIGNE = "\u001B[4m";
 
     private String nom;
+
     private int pv;
     private int vitesse;
     private int deplacement;
@@ -19,30 +20,29 @@ public class Robot
 
     private ArrayList<Attaque> ensAttaque;
 
-    // Constructeur corrigé (ajout déplacement)
     public Robot(String nom, int pv, int vitesse, int deplacement)
     {
         this.nom         = nom;
         this.pv          = pv;
         this.vitesse     = vitesse;
         this.deplacement = deplacement;
-        this.position    = 0; // Position de départ fixée à 0
+        this.position    = 0;
         this.ensAttaque  = new ArrayList<>();
     }
 
     /* ---------------------- */
     /*         Getteurs        */
     /* ---------------------- */
-    public ArrayList<Attaque> getAttaques()   { return this.ensAttaque; }
-    public Attaque getAttaque(int index)      { return this.ensAttaque.get(index); }
-    public int getPv()                        { return this.pv; }
-    public int getVit()                       { return this.vitesse; }
-    public String getNom()                    { return this.nom; }
-    public int getDeplacement()               { return this.deplacement; }
-    public int getPosition()                  { return this.position; }
+    public ArrayList<Attaque> getAttaques         () { return this.ensAttaque           ; }
+    public Attaque            getAttaque (int index) { return this.ensAttaque.get(index); }
+    public int                getPv               () { return this.pv                   ; }
+    public int                getVit              () { return this.vitesse              ; }
+    public String             getNom              () { return this.nom                  ; }
+    public int                getDeplacement      () { return this.deplacement          ; }
+    public int                getPosition         () { return this.position             ; }
 
     /* ---------------------- */
-    /*         Setteurs        */
+    /*         Setteurs       */
     /* ---------------------- */
     public void setPosition(int position) 
     { 
@@ -50,7 +50,7 @@ public class Robot
     }
 
     /* ---------------------- */
-    /*     Autres méthodes     */
+    /*     Autres méthodes    */
     /* ---------------------- */
     public void addAttaque(Attaque attaque) 
     { 
@@ -101,8 +101,7 @@ public class Robot
             }
         }
 
-        // Afficher le feedback pour l'attaquant
-        System.out.print(tirFeedback.toString()); // ← pour console serveur (DEBUG)
+        System.out.print(tirFeedback);
 
         return auMoinsUnTouche;
     }

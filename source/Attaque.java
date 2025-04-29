@@ -1,6 +1,7 @@
 public class Attaque
 {
     private String nom;
+
     private int degatMax;
     private int degatMin;
     private int portee;
@@ -17,7 +18,7 @@ public class Attaque
         this.nom           = nom;
         this.degatMax      = degatMax;
         this.degatMin      = degatMin;
-        this.portee       = portee;
+        this.portee        = portee;
         this.porteeMax     = porteeMax;
         this.precisionMax  = precisionMax;
         this.precisionMin  = precisionMin;
@@ -28,15 +29,15 @@ public class Attaque
     /* ---------------------- */
     /*         Getteurs        */
     /* ---------------------- */
-    public String getNom()         { return this.nom; }
-    public int getDegatMax()       { return this.degatMax; }
-    public int getDegatMin()       { return this.degatMin; }
-    public int getPortee()         { return this.portee; }
-    public int getPorteeMax()      { return this.porteeMax; }
-    public int getPrecisionMax()   { return this.precisionMax; }
-    public int getPrecisionMin()   { return this.precisionMin; }
-    public int getNbTirs()         { return nbTirs; }
-    public int getChanceMulti()    { return chanceMulti; }
+    public String getNom      () { return this.nom         ; }
+    public int getDegatMax    () { return this.degatMax    ; }
+    public int getDegatMin    () { return this.degatMin    ; }
+    public int getPortee      () { return this.portee      ; }
+    public int getPorteeMax   () { return this.porteeMax   ; }
+    public int getPrecisionMax() { return this.precisionMax; }
+    public int getPrecisionMin() { return this.precisionMin; }
+    public int getNbTirs      () { return nbTirs           ; }
+    public int getChanceMulti () { return chanceMulti      ; }
 
     /* ---------------------- */
     /*    Affichage / Debug    */
