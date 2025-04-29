@@ -144,10 +144,10 @@ java Client
 
 ## 🧑‍💻 Auteurs
 
-- Damestoy Ethan – GitHub  
-- Leclerc Jonathan – GitHub  
-- Millereux Bienvault William – GitHub  
-- Leprevost Lucas – GitHub
+- Damestoy Ethan – [Dépôt GitHub](https://github.com/Ethylaa)
+- Leclerc Jonathan – [Dépôt GitHub](https://github.com/Nailledo)
+- Millereux Bienvault William – [Dépôt GitHub](https://github.com/Falcrom37) 
+- Leprevost Lucas – [Dépôt GitHub](https://github.com/LucasLeprevost)
 -   
 -- 
 *Projet réalisé dans le cadre de la SAE 2.03 à l’IUT du Havre — BUT Informatique 1ᵉ année.*
