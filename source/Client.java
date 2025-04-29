@@ -26,11 +26,11 @@ public class Client
 
             while (true) 
             {
-                String userInput = scanner.nextLine();
-
-                if (userInput != null && !userInput.isEmpty()) 
-                
+                if (System.in.available() > 0) 
+                {
+                    String userInput = scanner.nextLine();
                     out.println(userInput);
+                }
 
                 if (in.ready()) 
                 {
