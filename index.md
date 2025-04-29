@@ -85,7 +85,10 @@ public boolean infligerAttaque(Attaque attaque, Robot ennemi)
    java Controleur
    ```
 
-3. Lancer les clients : (non fourni ici, prévoir un client basique TCP si besoin)
+3. Lancer les clients :   ( revient à lancer 1 joueur )
+```bash
+   java Controleur
+   ``` 
 
 ---
 
