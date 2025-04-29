@@ -134,28 +134,18 @@ public class Controleur
         if (nomJoueur == null || nomJoueur.trim().isEmpty()) 
             nomJoueur = defaultName;
 
-        String choixRobot = in.readLine();
         Joueur joueur = new Joueur(nomJoueur, this, socket, out, in);
+        out.println("Voici les robots disponibles:");
+        out.println(getRobotsAvailableAsString());
+        out.println("Choisissez un robot (entrez le nom complet sans fautes) :");
+
+        String choixRobot = in.readLine();
         joueur.choixRobot(choixRobot);
 
+        out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
         this.removeRobot(joueur.getRobotJoueur().getNom());
+        out.println("En attente d'un adversaire...");
 
-<<<<<<< HEAD
-        while (joueur.getRobotJoueur() == null) 
-        {
-            out.println("Voici les robots disponibles:");
-            out.println(getRobotsAvailableAsString());
-            out.println("Choisissez un robot (entrez le nom complet sans fautes) :");
-
-            String choixRobot = in.readLine();
-            joueur.choixRobot(choixRobot);
-
-            out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
-            this.removeRobot(joueur.getRobotJoueur().getNom());
-            out.println("Attendez votre adversaire");
-        }
-=======
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         return joueur;
     }
     
@@ -177,7 +167,6 @@ public class Controleur
         {
             while (j1.getRobotJoueur().getPv() > 0 && j2.getRobotJoueur().getPv() > 0) 
             {
-<<<<<<< HEAD
                 String infoTour = JAUNE + GRAS + "\n********     Tour : " + tours + "     *******\n" + RESET;
                 
                 out1.println(infoTour +
@@ -187,11 +176,6 @@ public class Controleur
                 out2.println(infoTour +
                              VERT + SOULIGNE + "Votre Robot   :" + RESET + "\n" + j2.getRobotJoueur() + "\n" +
                              VERT + SOULIGNE + "Robot Ennemie :" + RESET + "\n" + j1.getRobotJoueur()         );
-=======
-                String infoTour = MSG_TURN_INFO + tours;
-                out1.println(infoTour);
-                out2.println(infoTour);
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     
                 // ➔ Un seul joueur joue par tour
                 if (j2Joue) processAttack(j2, j1);
@@ -239,7 +223,6 @@ public class Controleur
     
     private void afficherDegat(Joueur jAtt, Joueur jDef, Attaque attaque, int degatsTotal)
     {
-<<<<<<< HEAD
         jAtt.getWriter().println(
             String.format("%-15s", jAtt.getNom()) + " attaque avec : " + BLEU_CLAIR + attaque.getNom() + RESET + "\n" +
             String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
@@ -251,16 +234,6 @@ public class Controleur
             String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
             "PV restants pour " + jDef.getNom() + ": " + BLEU_CLAIR + jDef.getRobotJoueur().getPv() + RESET + "\n"
         );
-=======
-        Attaque attaque = jAtt.getRobotJoueur().getAttaque(numAttaqueRobot);
-
-        String infoAttaque = jAtt.getNom() + ";" + attaque.getNom() + ";" + 
-                             jDef.getNom() + ";" + attaque.getDegatMax() + ";" + 
-                             attaque.getDegatMin() + ";" + jDef.getRobotJoueur().getPv();
-
-        jAtt.getWriter().println(MSG_ATTACK_RESULT + infoAttaque);
-        jDef.getWriter().println(MSG_ATTACK_RESULT + infoAttaque);
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     }
 
 
@@ -310,18 +283,11 @@ public class Controleur
                 repere.append(" ");
         }
 
-<<<<<<< HEAD
         // Infos sur les positions
         String infosPositions = CYAN +
             "Position de " + j1.getNom() + "(n°1) : " + r1.getPosition() + "\n" +
             "Position de " + j2.getNom() + "(n°2) : " + r2.getPosition() + "\n" +
             "Distance actuelle entre eux : " + calculerDistance(r1, r2) + RESET;
-=======
-        // Infos sur les positions au format simplifié
-        String infosPositions = j1.getNom() + ";" + r1.getPosition() + ";" +
-                               j2.getNom() + ";" + r2.getPosition() + ";" +
-                               calculerDistance(r1, r2);
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
 
         // Afficher avec identifiant
         out1.println(MSG_POSITION_INFO + infosPositions);
@@ -337,15 +303,9 @@ public class Controleur
     private void processAttack(Joueur attacker, Joueur defender) throws IOException 
     {
         afficherPositions(attacker, defender);
-<<<<<<< HEAD
     
         attacker.getWriter().println("C'est votre tour d'attaquer! Choisissez une attaque (0-" + (attacker.getRobotJoueur().getAttaques().size() - 1) + "):");
     
-=======
-
-        attacker.getWriter().println(MSG_ATTACK_REQUEST + "0;" + (attacker.getRobotJoueur().getAttaques().size() - 1));
-
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         try 
         {
             String choixAttaque = attacker.getReader().readLine();
@@ -357,15 +317,9 @@ public class Controleur
             {
                 Robot robot = attacker.getRobotJoueur();
                 int maxDep = robot.getDeplacement();
-<<<<<<< HEAD
     
                 attacker.getWriter().println("Choisissez une distance de déplacement (par pas de 25, entre -" + maxDep + " et +" + maxDep + ", sans 0):");
     
-=======
-
-                attacker.getWriter().println(MSG_MOVE_REQUEST + "-" + maxDep + ";" + maxDep);
-
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
                 String choixDep = attacker.getReader().readLine();
                 int deplacement = Integer.parseInt(choixDep);
     
@@ -377,35 +331,19 @@ public class Controleur
                 }
     
                 robot.setPosition(robot.getPosition() + deplacement);
-<<<<<<< HEAD
                 attacker.getWriter().println(VERT + "Vous vous êtes déplacé de " + deplacement + " unités." + RESET);
     
                 // Aucun appel à afficherDegat ici pour un déplacement !
-=======
-                attacker.getWriter().println(MSG_MOVE_RESULT + deplacement);
-
-                // ➔ Affiche la nouvelle situation après déplacement
-                afficherDegat(attacker, defender, indexAttaque);
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
                 return;
             }
     
             // Sinon, attaque normale
             int distance = calculerDistance(attacker.getRobotJoueur(), defender.getRobotJoueur());
-<<<<<<< HEAD
             attacker.getWriter().println("Distance actuelle entre vous et l'adversaire : " + distance);
     
             int totalDegats = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
     
             if (totalDegats > 0) 
-=======
-            attacker.getWriter().println(MSG_POSITION_INFO + attacker.getNom() + ";" + attacker.getRobotJoueur().getPosition() + ";" +
-                                       defender.getNom() + ";" + defender.getRobotJoueur().getPosition() + ";" + distance);
-
-            boolean bAttaque = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
-
-            if (bAttaque) 
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
             {
                 attacker.getWriter().println(MSG_ATTACK_SUCCESS);
             } 
@@ -458,11 +396,7 @@ public class Controleur
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ensRobot.size(); i++) 
         {
-<<<<<<< HEAD
             sb.append(ensRobot.get(i)).append("\n");
-=======
-            sb.append(ensRobot.get(i).getNom()).append("&");
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         }
         return sb.toString();
     }
@@ -507,11 +441,7 @@ public class Controleur
 
     private void initAttaque() 
     {
-<<<<<<< HEAD
         try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
-=======
-        try (Scanner sc = new Scanner(new FileInputStream("data/attaque.data"), "UTF8")) 
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
         {
             while (sc.hasNextLine()) 
             {

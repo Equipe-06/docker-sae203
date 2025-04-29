@@ -26,23 +26,6 @@ public class Robot
         this.pv = pv;
         this.vitesse = vitesse;
         this.deplacement = deplacement;
-<<<<<<< HEAD
-        this.position = 0;
-        this.ensAttaque = new ArrayList<>();
-    }
-
-    public ArrayList<Attaque> getAttaques() { return this.ensAttaque; }
-    public Attaque getAttaque(int index)    { return this.ensAttaque.get(index); }
-    public int getPv()                      { return this.pv; }
-    public int getVit()                     { return this.vitesse; }
-    public String getNom()                  { return this.nom; }
-    public int getDeplacement()             { return this.deplacement; }
-    public int getPosition()                { return this.position; }
-    public void setPosition(int position)   { this.position = position; }
-    public void addAttaque(Attaque attaque) { this.ensAttaque.add(attaque); }
-
-    public int infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
-=======
         this.position    = 0;
         this.ensAttaque  = new ArrayList<>();
     }
@@ -74,8 +57,7 @@ public class Robot
         this.ensAttaque.add(attaque); 
     }
 
-    public boolean infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
+    public int infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
     {
         int degatsInfliges;
         int precisionTir;
@@ -109,13 +91,7 @@ public class Robot
             }
         }
 
-<<<<<<< HEAD
         return totalDegats;
-=======
-        System.out.print(tirFeedback);
-
-        return auMoinsUnTouche;
->>>>>>> 47535443a0de4aff1d3f173e7d6f623133be8677
     }
 
     public void subirDegats(int degats)

@@ -3,6 +3,3 @@
 ./source/Joueur.java
 ./source/Controleur.java
 ./source/Client.java
-
-./source/FrameClient.java
-./source/PanelJoueur.java
