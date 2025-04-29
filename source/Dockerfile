@@ -1,14 +1,15 @@
-FROM openjdk:17-jdk-slim
+FROM debian:latest
 
 WORKDIR /app
 
-# Copier les fichiers source Java
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean
+
 COPY ./ .
 
-# Compiler le fichier Java
-RUN javac *.java
+RUN javac -encoding UTF-8 *.java
 
 EXPOSE 9000
 
-# Lancer le fichier compilé
 ENTRYPOINT ["java", "Controleur"]
