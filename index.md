@@ -1,48 +1,105 @@
-# Robot Battle Game - Docker Sae 203
+# Robot Battle Game - Docker SAE 203
 
-Bienvenue dans **Robot Battle Game** — un petit jeu Java dans lequel deux robots s'affrontent avec différentes attaques !
+Bienvenue dans **Robot Battle Game** — un projet Java dans lequel deux robots s'affrontent à coups d'attaques stratégiques !
+
+---
 
 ## 📚 Description
-Ce projet est une simulation de combat entre deux joueurs contrôlant chacun un robot.  
-Chaque robot dispose de points de vie (PV), d'une vitesse et de plusieurs attaques pré-définies.  
-Le but du jeu est de réduire les PV de l'adversaire à zéro avant de perdre les siens.
 
-Le joueur choisit le nom de son robot.  
-Les attaques infligent des dégâts différents.  
-La vitesse du robot détermine qui attaque en premier.
+**Robot Battle Game** est une simulation de combat à deux joueurs :
+
+- Chaque joueur choisit et contrôle un robot.
+- Chaque robot dispose :
+  - de **points de vie (PV)**,
+  - d'une **vitesse**,
+  - de **déplacements**, 
+  - et d'une liste **d'attaques**.
+- Le but est de **réduire à 0 PV** le robot de l'adversaire avant que le sien ne soit détruit.
+
+Les **attaques** varient selon leurs dégâts, leur précision et leur portée. 
+La **vitesse** détermine l'ordre des tours.
+
+
+---
 
 ## 🛠️ Structure du Projet
 
-### Attaque
-Modélise une attaque (nom + dégâts).
+### 🔬 Attaque
+- Modélise une attaque :
+  - **Nom**
+  - **Dégâts max/min**
+  - **Portée**
+  - **Précision**
+  - **Nombre de tirs**
+  - **Chance de multiplicateur**
 
-### Robot
-Modélise un robot (nom, PV, vitesse, et liste d'attaques).
+```java
+public Attaque(String nom, int degatMax, int degatMin, int portee, int porteeMax, int precisionMax, int precisionMin, int nbTirs, int chanceMulti)
+```
 
-### Joueur
-Modélise un joueur (nom + robot associé).
+### 🛸 Robot
+- Représente un robot avec :
+  - **Nom**
+  - **Points de Vie (PV)**
+  - **PV Max**
+  - **Vitesse**
+  - **Déplacement**
+  - **Liste d'attaques**
 
-### Controleur
-Classe principale qui gère le déroulement du jeu :
-- Création des joueurs.
-- Tour par tour : chaque robot attaque à son tour.
-- Fin du jeu : victoire, égalité ou défaite.
+```java
+public Robot(String nom, int pv, int vitesse, int deplacement)
+public ArrayList<Attaque> getAttaques()
+public Attaque getAttaque(int index)
+public int getPv()
+public int getPvMax()
+public int getVit()
+public String getNom()
+public void addAttaque(Attaque attaque)
+public boolean infligerAttaque(Attaque attaque, Robot ennemi)
+```
 
-### Serveur
-(Note : Cette classe est appelée dans Controleur, mais n'est pas encore fournie dans votre code.)
+### 👨‍💻 Joueur
+- Modélise un joueur humain.
+  - Possède un **nom** et un **robot** associé.
 
-## 🚀 Lancer le Jeu
-1. Compiler tous les fichiers `.java` :
+### 📁 Controleur
+- Classe principale qui orchestre :
+  - La **connexion** des deux joueurs.
+  - Le **déroulement du jeu** (à tours alternés).
+  - La **gestion des attaques**, déplacements, dégâts et de la **victoire**.
+
+
+### 🚀 Serveur
+- (Note : Cette partie est incluse dans le **Controleur** et permet le jeu en **multijoueur TCP**.)
+
+---
+
+## 🚀 Comment Lancer le Jeu
+
+1. Compiler tous les fichiers Java :
    ```bash
    javac *.java
    ```
-2. Exécuter la classe principale `Client` :
+2. Lancer le serveur :
    ```bash
-   java Client
+   java Controleur
    ```
 
-## 🧑‍💻 Auteur
-- **Damestoy Ethan** – [GitHub](https://github.com/damestoy)
-- **Leclerc Jonathan** – [GitHub](https://github.com/leclerc)
-- **Millereux Bienvault William** – [GitHub](https://github.com/william)
-- **Leprevost Lucas** – [GitHub](https://github.com/lucas)
+3. Lancer les clients : (non fourni ici, prévoir un client basique TCP si besoin)
+
+---
+
+## 🧑‍💻 Auteurs
+
+- **Damestoy Ethan**  — [GitHub](#)
+- **Leclerc Jonathan** — [GitHub](#)
+- **Millereux Bienvault William** — [GitHub](#)
+- **Leprevost Lucas** — [GitHub](#)
+
+---
+
+> Ce projet a été réalisé dans le cadre de la SAE 203 en BUT Informatique.
+
+---
+
+# 🎉 Amusez-vous bien sur **Robot Battle Game** ! 🏆
