@@ -423,7 +423,7 @@ public class Controleur
 
     private void initRobot() 
     {
-        try (Scanner sc = new Scanner(new FileInputStream("robot.data"), "UTF8")) 
+        try (Scanner sc = new Scanner(new FileInputStream("data/robot.data"), "UTF8")) 
         {
             while (sc.hasNextLine()) 
             {
@@ -445,7 +445,7 @@ public class Controleur
 
     private void initAttaque() 
 {
-    try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
+    try (Scanner sc = new Scanner(new FileInputStream("data/attaque.data"), "UTF8")) 
     {
         while (sc.hasNextLine()) 
         {

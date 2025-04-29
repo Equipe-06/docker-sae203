@@ -23,8 +23,7 @@ public class Client
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Scanner scanner = new Scanner(System.in);
-
-            // Thread pour lire les messages du serveur ( Obligatoire si on veut pas bloquer le terminal )
+            
             Thread receiveThread = new Thread(() -> {
                 try 
                 {
@@ -40,7 +39,6 @@ public class Client
             });
             receiveThread.start();
 
-            // Boucle principale pour envoyer des messages
             while (true) 
             {
                 String userInput = scanner.nextLine();

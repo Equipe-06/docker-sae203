@@ -6,10 +6,10 @@ RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean
 
-COPY ./ .
+COPY ./ . 
 
-RUN javac -encoding UTF-8 *.java
+RUN javac -encoding UTF-8 -d class @Compile.list
 
 EXPOSE 9000
 
-ENTRYPOINT ["java", "Controleur"]
+ENTRYPOINT ["java", "-cp", "class", "Controleur"]
