@@ -26,21 +26,18 @@ public class Client
 
             while (true) 
             {
-                // Envoyer un message si l'utilisateur a tapé quelque chose
-                if (System.in.available() > 0) 
-                {
-                    String userInput = scanner.nextLine();
-                    out.println(userInput);
-                }
+                String userInput = scanner.nextLine();
 
-                // Lire un message du serveur s'il y en a un
+                if (userInput != null && !userInput.isEmpty()) 
+                
+                    out.println(userInput);
+
                 if (in.ready()) 
                 {
                     String serverResponse = in.readLine();
                     System.out.println(serverResponse);
                 }
 
-                // Petite pause pour éviter de saturer le CPU
                 Thread.sleep(50);
             }
 
