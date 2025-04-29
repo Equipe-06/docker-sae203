@@ -441,7 +441,7 @@ public class Controleur
 
     private void initAttaque() 
     {
-        try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
+        try (Scanner sc = new Scanner(new FileInputStream("/data/attaque.data"), "UTF8")) 
         {
             while (sc.hasNextLine()) 
             {
