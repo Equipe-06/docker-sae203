@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Client 
 {
-    private static final String SERVER_IP = "localhost";
+    private static final String SERVER_IP = "127.0.0.1";
     private static final int SERVER_PORT = 9000;
 
     public static void main(String[] args) 

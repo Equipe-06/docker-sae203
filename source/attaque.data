@@ -1,24 +1,18 @@
-Laser Éclair                  10  95 0
-Missile Sonic                 15  75 1
-Coup de Fer                   8   98 2
-Rayon Plasma                  12  90 3
-Poing Titane                  9   96 4
-Éclair Photonique             14  85 5
-Onde de Choc                  11  92 0
-Tir Rapide                    7   99 1
-Bombe Gravitationnelle        18  60 2
-Lame Solaire                  13  88 3
-Impact Sidéral                16  72 4
-Charge Quantique              17  68 5
-Frappe Thermique              12  90 0
-Vortex Laser                  19  55 1
-Sabre Magnétique              10  95 2
-Choc Cryogénique              8   97 3
-Missiles Hydra                16  70 4
-Explosion Ionique             20  50 5
-Rayon Gamma                   18  60 0
-Canon Arctique                11  92 1
-Rafale Plasma                 13  88 2
-Bouclier Percutant            7   99 3
-Frappe Oméga                  19  55 4
-Assaut Mécanique              9   97 5
+Bouclier_Magnétique 0 0 0 0 100 100 1 0 0
+Rush_Plasmalame 400 100 100 300 100 50 1 0 0
+Tire_Augmenter 50 50 200 700 75 25 1 0 0
+Tempête_de_Balles 50 50 300 500 100 50 6 75 1
+Propulseur_Sigma 0 0 0 0 90 90 1 0 1
+Slash_Gamma 150 0 0 0 75 75 1 0 1
+Fusie_Ionique 200 200 300 500 80 40 1 0 2
+Surcharge_Balistique 0 0 0 0 100 100 1 0 2
+Replie_Stratégique 50 0 300 500 50 25 1 0 2
+Tire_Balistique 200 200 300 700 50 75 3 50 3
+Camouflage_Tactique 0 0 0 0 80 80 1 0 3
+Lame_Fantôme 100 100 100 250 100 100 1 0 3
+Frappe_Gravitationnelle 500 0 1000 1000 90 90 1 0 4
+Piratage_Atlas 50 0 350 350 65 65 1 0 4
+Siphon_Plasma 200 100 350 500 75 65 1 0 4
+Réparation_Flash 0 0 0 0 80 80 1 0 5
+Nano-Barrier 0 0 0 0 75 75 1 0 5
+Rafale_Tactique 100 50 300 500 100 50 3 65 5
