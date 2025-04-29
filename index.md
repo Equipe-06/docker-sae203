@@ -1,108 +1,161 @@
-# Robot Battle Game - Docker SAE 203
 
-Bienvenue dans **Robot Battle Game** — un projet Java dans lequel deux robots s'affrontent à coups d'attaques stratégiques !
+# 🤖 Robot Battle Game - Docker SAE 2.03
+
+Bienvenue dans **Robot Battle Game**, un jeu Java multijoueur où deux robots s'affrontent en utilisant des attaques stratégiques ! 🕹️
 
 ---
 
 ## 📚 Description
 
-**Robot Battle Game** est une simulation de combat à deux joueurs :
+**Robot Battle Game** est une **simulation de combat** entre deux joueurs, chacun contrôlant un robot. Chaque robot possède les caractéristiques suivantes :
 
-- Chaque joueur choisit et contrôle un robot.
-- Chaque robot dispose :
-  - de **points de vie (PV)**,
-  - d'une **vitesse**,
-  - de **déplacements**, 
-  - et d'une liste **d'attaques**.
-- Le but est de **réduire à 0 PV** le robot de l'adversaire avant que le sien ne soit détruit.
+- **Points de vie (PV)** : la résistance du robot
+- **Vitesse** : détermine l'ordre des attaques
+- **Attaques pré-définies** : chaque robot peut effectuer plusieurs attaques avec des effets différents
 
-Les **attaques** varient selon leurs dégâts, leur précision et leur portée. 
-La **vitesse** détermine l'ordre des tours.
+### 🎯 Objectif
+L'objectif est de réduire les **PV** de l'adversaire à zéro avant que le vôtre n'atteigne ce seuil.
 
+Les **attaques** infligent des dégâts différents en fonction des caractéristiques de chaque robot, et la **vitesse** détermine qui attaque en premier.
+
+### ⚡ Gameplay
+1. Le joueur choisit le nom de son robot.
+2. Le jeu se déroule en **tour par tour**, où chaque robot attaque à son tour.
+3. La partie se termine lorsqu'un robot perd tous ses **points de vie** ou si un match nul est déclaré.
 
 ---
 
 ## 🛠️ Structure du Projet
 
-### 🔬 Attaque
-- Modélise une attaque :
-  - **Nom**
-  - **Dégâts max/min**
-  - **Portée**
-  - **Précision**
-  - **Nombre de tirs**
-  - **Chance de multiplicateur**
+### 🗡️ `Attaque`
+La classe **Attaque** modélise une attaque spécifique :
+- **Nom**
+- **Dégâts max / min**
+- **Portée min / max**
+- **Précision min / max**
+- **Nombre de tirs**
+- **Chance de multiplicateur**
 
 ```java
-public Attaque(String nom, int degatMax, int degatMin, int portee, int porteeMax, int precisionMax, int precisionMin, int nbTirs, int chanceMulti)
+public Attaque(String nom, int degatsMax, int degatsMin, int portee, int porteeMax,
+               int precisionMax, int precisionMin, int nbTirs, int chanceMultiplicateur)
 ```
 
-### 🛸 Robot
-- Représente un robot avec :
-  - **Nom**
-  - **Points de Vie (PV)**
-  - **PV Max**
-  - **Vitesse**
-  - **Déplacement**
-  - **Liste d'attaques**
+### 🤖 `Robot`
+La classe **Robot** modélise un robot :
+- **Nom**
+- **PV**
+- **Vitesse**
+- **Liste d'attaques**
+- **Déplacement** (optionnel)
 
 ```java
+public Robot(String nom, int pv, int vitesse)
 public Robot(String nom, int pv, int vitesse, int deplacement)
+```
+
+Méthodes associées :
+```java
 public ArrayList<Attaque> getAttaques()
 public Attaque getAttaque(int index)
 public int getPv()
-public int getPvMax()
 public int getVit()
 public String getNom()
+public int getPvMax()
 public void addAttaque(Attaque attaque)
 public boolean infligerAttaque(Attaque attaque, Robot ennemi)
 ```
 
-### 👨‍💻 Joueur
-- Modélise un joueur humain.
-  - Possède un **nom** et un **robot** associé.
+### 🧍 `Joueur`
+Modélise un joueur avec un nom et un robot associé.
 
-### 📁 Controleur
-- Classe principale qui orchestre :
-  - La **connexion** des deux joueurs.
-  - Le **déroulement du jeu** (à tours alternés).
-  - La **gestion des attaques**, déplacements, dégâts et de la **victoire**.
+### 🎮 `Controleur`
+Classe principale qui gère le déroulement du jeu :
+- Création des joueurs
+- Tour par tour
+- Gestion de la fin du jeu
 
-
-### 🚀 Serveur
-- (Note : Cette partie est incluse dans le **Controleur** et permet le jeu en **multijoueur TCP**.)
+### 🖧 `Serveur`
+- Stocke les deux clients
+- Gère la communication réseau (via sockets)
+- Hébergé via Docker
 
 ---
 
-## 🚀 Comment Lancer le Jeu
+## 🖧 Architecture Réseau et Déploiement Docker
 
-1. Compiler tous les fichiers Java :
-   ```bash
-   javac *.java
-   ```
-2. Lancer le serveur :
-   ```bash
-   java Controleur
-   ```
+Le jeu fonctionne selon une **architecture client-serveur** :
 
-3. Lancer les clients :   ( revient à lancer 1 joueur )
+- **Serveur** :
+  - Centralise la logique de jeu
+  - Coordonne les tours et transmet les actions
+- **Clients (2 joueurs)** :
+  - Envoient les actions (choix, attaques)
+  - Reçoivent les mises à jour du jeu
+
+### 🐳 Déploiement avec Docker
+
+Le serveur est hébergé dans un conteneur Docker.
+
 ```bash
-   java Controleur
-   ``` 
+docker build -t robot .
+docker run -p 9000:9000 robot    #Dans le cas ou on utilise le terminal / un serveur distant
+```
+
+> Clients connectés via l’IP du serveur Docker (`localhost` ou par exemple)
+
+---
+
+## 🐳 Dockerfile – Serveur Java
+
+```dockerfile
+FROM debian:latest
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean
+
+COPY ./ .
+
+RUN javac -encoding UTF-8 -d class @Compile.list
+
+EXPOSE 9000
+
+ENTRYPOINT ["java", "-cp", "class", "Controleur"]
+```
+
+---
+
+## 🚀 Lancer le Jeu
+
+### 🔧 Compilation
+```bash
+javac *.java
+```
+
+### ▶️ Exécution
+```bash
+java Client
+```
 
 ---
 
 ## 🧑‍💻 Auteurs
 
-- **Damestoy Ethan**  — [GitHub](#)
-- **Leclerc Jonathan** — [GitHub](#)
-- **Millereux Bienvault William** — [GitHub](#)
-- **Leprevost Lucas** — [GitHub](#)
+- Damestoy Ethan – GitHub  
+- Leclerc Jonathan – GitHub  
+- Millereux Bienvault William – GitHub  
+- Leprevost Lucas – GitHub  
 
 ---
 
-> Ce projet a été réalisé dans le cadre de la SAE 203 en BUT Informatique.
+## 🔗 Liens utiles
+
+- 🌐 [Site web du projet](https://Equipe-06.github.io/docker-sae203/index.md)
+- 📂 [Dépôt GitHub](https://github.com/equipe-06/docker-sae203/)
 
 ---
 
-# 🎉 Amusez-vous bien sur **Robot Battle Game** ! 🏆
+*Projet réalisé dans le cadre de la SAE 2.03 à l’IUT du Havre — BUT Informatique 2ᵉ année.*
