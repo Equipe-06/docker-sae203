@@ -88,8 +88,6 @@ public class Controleur
             this.j1.getRobotJoueur().setPosition(-500);
             this.j2.getRobotJoueur().setPosition(500);
 
-            afficherPositions(this.j1, this.j2);
-
             jouerPartie(this.j1, this.j2);
             finaliserPartie(this.j1, this.j2);
 
@@ -145,6 +143,7 @@ public class Controleur
 
             out.println("Vous avez choisi le robot: " + joueur.getRobotJoueur().getNom());
             this.removeRobot(joueur.getRobotJoueur().getNom());
+            out.println("Attendez votre adversaire");
         }
         return joueur;
     }
@@ -168,8 +167,14 @@ public class Controleur
             while (j1.getRobotJoueur().getPv() > 0 && j2.getRobotJoueur().getPv() > 0) 
             {
                 String infoTour = JAUNE + GRAS + "\n********     Tour : " + tours + "     *******\n" + RESET;
-                out1.println(infoTour);
-                out2.println(infoTour);
+                
+                out1.println(infoTour +
+                             VERT + SOULIGNE + "Votre Robot   :" + RESET + "\n" + j1.getRobotJoueur() + "\n" +
+                             VERT + SOULIGNE + "Robot Ennemie :" + RESET + "\n" + j2.getRobotJoueur()         );
+
+                out2.println(infoTour +
+                             VERT + SOULIGNE + "Votre Robot   :" + RESET + "\n" + j2.getRobotJoueur() + "\n" +
+                             VERT + SOULIGNE + "Robot Ennemie :" + RESET + "\n" + j1.getRobotJoueur()         );
     
                 // ➔ Un seul joueur joue par tour
                 if (j2Joue)
@@ -219,22 +224,22 @@ public class Controleur
         joueur.getWriter().println(ROUGE + CADRE_DEFAITE + RESET);
     }
     
-    private void afficherDegat(Joueur jAtt, Joueur jDef, int numAttaqueRobot) 
+    private void afficherDegat(Joueur jAtt, Joueur jDef, Attaque attaque, int degatsTotal)
     {
-        Attaque attaque = jAtt.getRobotJoueur().getAttaque(numAttaqueRobot);
-
         jAtt.getWriter().println(
             String.format("%-15s", jAtt.getNom()) + " attaque avec : " + BLEU_CLAIR + attaque.getNom() + RESET + "\n" +
-            String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + " dégâts variables (max: " + attaque.getDegatMax() + ", min: " + attaque.getDegatMin() + ")" + RESET + "\n" +
+            String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
             "PV restants pour " + jDef.getNom() + ": " + BLEU_CLAIR + jDef.getRobotJoueur().getPv() + RESET + "\n"
         );
 
         jDef.getWriter().println(
             String.format("%-15s", jAtt.getNom()) + " attaque avec : " + BLEU_CLAIR + attaque.getNom() + RESET + "\n" +
-            String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + " dégâts variables (max: " + attaque.getDegatMax() + ", min: " + attaque.getDegatMin() + ")" + RESET + "\n" +
+            String.format("%-15s", jDef.getNom()) + " subit : " + BLEU_CLAIR + degatsTotal + " dégâts " + RESET + "\n" +
             "PV restants pour " + jDef.getNom() + ": " + BLEU_CLAIR + jDef.getRobotJoueur().getPv() + RESET + "\n"
         );
     }
+
+
 
     private void afficherPositions(Joueur j1, Joueur j2)
     {
@@ -283,8 +288,8 @@ public class Controleur
 
         // Infos sur les positions
         String infosPositions = CYAN +
-            "Position de " + j1.getNom() + " : " + r1.getPosition() + "\n" +
-            "Position de " + j2.getNom() + " : " + r2.getPosition() + "\n" +
+            "Position de " + j1.getNom() + "(n°1) : " + r1.getPosition() + "\n" +
+            "Position de " + j2.getNom() + "(n°2) : " + r2.getPosition() + "\n" +
             "Distance actuelle entre eux : " + calculerDistance(r1, r2) + RESET;
 
         // Afficher
@@ -305,50 +310,47 @@ public class Controleur
     private void processAttack(Joueur attacker, Joueur defender) throws IOException 
     {
         afficherPositions(attacker, defender);
-
+    
         attacker.getWriter().println("C'est votre tour d'attaquer! Choisissez une attaque (0-" + (attacker.getRobotJoueur().getAttaques().size() - 1) + "):");
-
+    
         try 
         {
             String choixAttaque = attacker.getReader().readLine();
             int indexAttaque = Integer.parseInt(choixAttaque);
-
+    
             Attaque attaque = attacker.getRobotJoueur().getAttaque(indexAttaque);
-
+    
             if (attaque.getNom().equals("Déplacer")) 
             {
-                // Gestion spéciale déplacement
                 Robot robot = attacker.getRobotJoueur();
                 int maxDep = robot.getDeplacement();
-
+    
                 attacker.getWriter().println("Choisissez une distance de déplacement (par pas de 25, entre -" + maxDep + " et +" + maxDep + ", sans 0):");
-
+    
                 String choixDep = attacker.getReader().readLine();
                 int deplacement = Integer.parseInt(choixDep);
-
-                // Vérification déplacement valide
+    
                 if (Math.abs(deplacement) > maxDep || deplacement % 25 != 0 || deplacement == 0) 
                 {
                     attacker.getWriter().println(ROUGE + "Déplacement invalide, réessayez." + RESET);
                     processAttack(attacker, defender);
                     return;
                 }
-
+    
                 robot.setPosition(robot.getPosition() + deplacement);
                 attacker.getWriter().println(VERT + "Vous vous êtes déplacé de " + deplacement + " unités." + RESET);
-
-                // ➔ Affiche la nouvelle situation après déplacement
-                afficherDegat(attacker, defender, indexAttaque);
+    
+                // Aucun appel à afficherDegat ici pour un déplacement !
                 return;
             }
-
-            // Attaque normale
+    
+            // Sinon, attaque normale
             int distance = calculerDistance(attacker.getRobotJoueur(), defender.getRobotJoueur());
             attacker.getWriter().println("Distance actuelle entre vous et l'adversaire : " + distance);
-
-            boolean bAttaque = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
-
-            if (bAttaque) 
+    
+            int totalDegats = attacker.getRobotJoueur().infligerAttaqueDistance(attaque, defender.getRobotJoueur(), distance);
+    
+            if (totalDegats > 0) 
             {
                 attacker.getWriter().println(VERT + "Attaque réussie !" + RESET);
             } 
@@ -356,9 +358,9 @@ public class Controleur
             {
                 attacker.getWriter().println(ROUGE + "L'attaque a échoué." + RESET);
             }
-
-            // ➔ Affiche la situation après attaque
-            afficherDegat(attacker, defender, indexAttaque);
+    
+            afficherDegat(attacker, defender, attaque, totalDegats);
+    
         } 
         catch (NumberFormatException | IndexOutOfBoundsException e) 
         {
@@ -366,6 +368,7 @@ public class Controleur
             processAttack(attacker, defender);
         }
     }
+    
 
     /**
      * Finalise la partie en fermant les connexions
@@ -400,7 +403,7 @@ public class Controleur
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ensRobot.size(); i++) 
         {
-            sb.append(i).append(". ").append(ensRobot.get(i)).append("\n");
+            sb.append(ensRobot.get(i)).append("\n");
         }
         return sb.toString();
     }
@@ -444,62 +447,62 @@ public class Controleur
 
 
     private void initAttaque() 
-{
-    try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
     {
-        while (sc.hasNextLine()) 
+        try (Scanner sc = new Scanner(new FileInputStream("attaque.data"), "UTF8")) 
         {
-            String ligne = sc.nextLine();
-            if (ligne.trim().isEmpty()) continue;
-
-            String[] parts = ligne.trim().split("\\s+"); // découpe par ESPACES multiples
-
-            if (parts.length < 10)
+            while (sc.hasNextLine()) 
             {
-                System.out.println("Ligne mal formatée: " + ligne);
-                continue;
+                String ligne = sc.nextLine();
+                if (ligne.trim().isEmpty()) continue;
+
+                String[] parts = ligne.trim().split("\\s+"); // découpe par ESPACES multiples
+
+                if (parts.length < 10)
+                {
+                    System.out.println("Ligne mal formatée: " + ligne);
+                    continue;
+                }
+
+                // Reconstituer le nom
+                StringBuilder nomBuilder = new StringBuilder();
+                for (int i = 0; i < parts.length - 9; i++) // tout sauf les 9 derniers chiffres
+                {
+                    nomBuilder.append(parts[i]);
+                    if (i != parts.length - 10) nomBuilder.append(" ");
+                }
+                String nom = nomBuilder.toString();
+
+                int degatMax     = Integer.parseInt(parts[parts.length-9]);
+                int degatMin     = Integer.parseInt(parts[parts.length-8]);
+                int portee1      = Integer.parseInt(parts[parts.length-7]);
+                int porteeMax    = Integer.parseInt(parts[parts.length-6]);
+                int precisionMax = Integer.parseInt(parts[parts.length-5]);
+                int precisionMin = Integer.parseInt(parts[parts.length-4]);
+                int nbFois       = Integer.parseInt(parts[parts.length-3]);
+                int chanceMulti  = Integer.parseInt(parts[parts.length-2]);
+                int indiceRobot  = Integer.parseInt(parts[parts.length-1]);
+
+                Attaque attaque = new Attaque(nom, degatMax, degatMin, portee1, porteeMax, precisionMax, precisionMin, nbFois, chanceMulti);
+
+                this.ensAttaque.add(attaque);
+
+                if (indiceRobot >= 0 && indiceRobot < this.ensRobot.size())
+                {
+                    getRobot(indiceRobot).getAttaques().add(attaque);
+                }
             }
-
-            // Reconstituer le nom
-            StringBuilder nomBuilder = new StringBuilder();
-            for (int i = 0; i < parts.length - 9; i++) // tout sauf les 9 derniers chiffres
-            {
-                nomBuilder.append(parts[i]);
-                if (i != parts.length - 10) nomBuilder.append(" ");
-            }
-            String nom = nomBuilder.toString();
-
-            int degatMax     = Integer.parseInt(parts[parts.length-9]);
-            int degatMin     = Integer.parseInt(parts[parts.length-8]);
-            int portee1      = Integer.parseInt(parts[parts.length-7]);
-            int porteeMax    = Integer.parseInt(parts[parts.length-6]);
-            int precisionMax = Integer.parseInt(parts[parts.length-5]);
-            int precisionMin = Integer.parseInt(parts[parts.length-4]);
-            int nbFois       = Integer.parseInt(parts[parts.length-3]);
-            int chanceMulti  = Integer.parseInt(parts[parts.length-2]);
-            int indiceRobot  = Integer.parseInt(parts[parts.length-1]);
-
-            Attaque attaque = new Attaque(nom, degatMax, degatMin, portee1, porteeMax, precisionMax, precisionMin, nbFois, chanceMulti);
-
-            this.ensAttaque.add(attaque);
-
-            if (indiceRobot >= 0 && indiceRobot < this.ensRobot.size())
-            {
-                getRobot(indiceRobot).getAttaques().add(attaque);
-            }
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
         }
-    } 
-    catch (Exception e) 
-    {
-        e.printStackTrace();
-    }
 
-    // Ajoute "Déplacer"
-    for (Robot r : this.ensRobot)
-    {
-        r.addAttaque(new Attaque("Déplacer", 0, 0, 0, 0, 100, 100, 1, 0));
+        // Ajoute "Déplacer"
+        for (Robot r : this.ensRobot)
+        {
+            r.addAttaque(new Attaque("Déplacer", 0, 0, 0, 0, 100, 100, 1, 0));
+        }
     }
-}
 
     
     /* ---------------------- */

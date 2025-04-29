@@ -19,45 +19,27 @@ public class Robot
 
     private ArrayList<Attaque> ensAttaque;
 
-    // Constructeur corrigé (ajout déplacement)
     public Robot(String nom, int pv, int vitesse, int deplacement)
     {
-        this.nom         = nom;
-        this.pv          = pv;
-        this.vitesse     = vitesse;
+        this.nom = nom;
+        this.pv = pv;
+        this.vitesse = vitesse;
         this.deplacement = deplacement;
-        this.position    = 0; // Position de départ fixée à 0
-        this.ensAttaque  = new ArrayList<>();
+        this.position = 0;
+        this.ensAttaque = new ArrayList<>();
     }
 
-    /* ---------------------- */
-    /*         Getteurs        */
-    /* ---------------------- */
-    public ArrayList<Attaque> getAttaques()   { return this.ensAttaque; }
-    public Attaque getAttaque(int index)      { return this.ensAttaque.get(index); }
-    public int getPv()                        { return this.pv; }
-    public int getVit()                       { return this.vitesse; }
-    public String getNom()                    { return this.nom; }
-    public int getDeplacement()               { return this.deplacement; }
-    public int getPosition()                  { return this.position; }
+    public ArrayList<Attaque> getAttaques() { return this.ensAttaque; }
+    public Attaque getAttaque(int index)    { return this.ensAttaque.get(index); }
+    public int getPv()                      { return this.pv; }
+    public int getVit()                     { return this.vitesse; }
+    public String getNom()                  { return this.nom; }
+    public int getDeplacement()             { return this.deplacement; }
+    public int getPosition()                { return this.position; }
+    public void setPosition(int position)   { this.position = position; }
+    public void addAttaque(Attaque attaque) { this.ensAttaque.add(attaque); }
 
-    /* ---------------------- */
-    /*         Setteurs        */
-    /* ---------------------- */
-    public void setPosition(int position) 
-    { 
-        this.position = position; 
-    }
-
-    /* ---------------------- */
-    /*     Autres méthodes     */
-    /* ---------------------- */
-    public void addAttaque(Attaque attaque) 
-    { 
-        this.ensAttaque.add(attaque); 
-    }
-
-    public boolean infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
+    public int infligerAttaqueDistance(Attaque attaque, Robot cible, int distance)
     {
         int degatsInfliges;
         int precisionTir;
@@ -65,7 +47,7 @@ public class Robot
         if (!(attaque.getPortee() == 0 && attaque.getPorteeMax() == 0))
         {
             if (distance > attaque.getPorteeMax())
-                return false;
+                return 0;
         }
 
         if (distance <= attaque.getPortee()) 
@@ -79,32 +61,19 @@ public class Robot
             precisionTir = attaque.getPrecisionMin();
         }
 
-        boolean auMoinsUnTouche = false;
+        int totalDegats = 0;
 
-        // Pour stocker les messages de tir (qu'on renverra à l'afficheur plus tard)
-        StringBuilder tirFeedback = new StringBuilder();
-
-        // Plusieurs tirs
         for (int i = 0; i < attaque.getNbTirs(); i++)
         {
             int random = (int) (Math.random() * 100) + 1;
-
             if (random <= precisionTir)
             {
                 cible.subirDegats(degatsInfliges);
-                tirFeedback.append(VERT + "BANG! Tir " + (i+1) + " réussi !" + RESET + "\n");
-                auMoinsUnTouche = true;
-            }
-            else
-            {
-                tirFeedback.append(ROUGE + "Miss... Tir " + (i+1) + " raté." + RESET + "\n");
+                totalDegats += degatsInfliges;
             }
         }
 
-        // Afficher le feedback pour l'attaquant
-        System.out.print(tirFeedback.toString()); // ← pour console serveur (DEBUG)
-
-        return auMoinsUnTouche;
+        return totalDegats;
     }
 
     public void subirDegats(int degats)
@@ -114,21 +83,20 @@ public class Robot
             this.pv = 0;
     }
 
-
-
     public String toString()
     {
         String sRet = "";
-        sRet = VERT + SOULIGNE + "Robot :" + RESET + "\n" +
-               " " + CYAN + "- Nom         : " + ROUGE + this.nom + RESET + "\n" +
+        sRet = " " + ROUGE + this.nom + RESET + "\n" +
                " " + CYAN + "- Pv          : " + RESET + this.pv + "\n" +
                " " + CYAN + "- Vitesse     : " + RESET + this.vitesse + "\n" +
                " " + CYAN + "- Déplacement : " + RESET + this.deplacement + "\n" +
-               " " + CYAN + "- Position    : " + RESET + this.position + "\n\n" +
-               JAUNE + SOULIGNE + "   Attaques du Robot : " + RESET + "\n";
+               " " + CYAN + "- Position    : " + RESET + this.position + "\n" +
+               "\n" +
+               " " + JAUNE + "Attaques du Robot : " + ROUGE + this.nom + RESET + "\n";
 
         for (int cpt = 0; cpt < this.ensAttaque.size(); cpt++)
             sRet += "    # " + cpt + " : " + this.ensAttaque.get(cpt) + "\n";
+        sRet += "==================================================================\n";
 
         return sRet;
     }

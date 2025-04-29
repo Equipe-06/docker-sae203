@@ -47,47 +47,49 @@ public class Attaque
         final String RESET      = "\u001B[0m";
         final String TITRE      = "\u001B[1;36m";  // Cyan clair gras
         final String VAL        = "\u001B[1;37m";  // Blanc gras
-        final String ACCENT     = "\u001B[1;34m";  // Bleu tactique
         final String SYSTEM     = "\u001B[38;5;244m";  // Gris tech custom
-    
+
         StringBuilder sb = new StringBuilder();
-    
-        sb.append(ACCENT).append("> ").append(TITRE).append("Attaque: ").append(VAL).append(this.nom).append(RESET).append("\n");
-    
-        sb.append(SYSTEM)
-          .append(String.format("%-10s", "Portée : "))
-          .append(VAL).append(String.format("%-5d", this.portee)).append(" km")
-          .append(SYSTEM).append(" -> ")
-          .append(VAL).append(String.format("%-4d", this.degatMax)).append(" dmg")
-          .append(SYSTEM).append(" - ")
-          .append(VAL).append(String.format("%-3d", this.precisionMax)).append("% hit chance")
-          .append(RESET).append("\n");
-    
-        sb.append(SYSTEM)
-          .append(String.format("%-10s", "Portée : "))
-          .append(VAL).append(String.format("%-5d", this.porteeMax)).append(" km")
-          .append(SYSTEM).append(" -> ")
-          .append(VAL).append(String.format("%-4d", this.degatMin)).append(" dmg")
-          .append(SYSTEM).append(" - ")
-          .append(VAL).append(String.format("%-3d", this.precisionMin)).append("% hit chance")
-          .append(RESET);
-    
+
+        sb.append(TITRE).append("Attaque: ").append(VAL).append(this.nom).append(RESET).append("\n");
+
+        String ligne1 = SYSTEM + String.format("%-10s", "Portée : ")
+                    + VAL + String.format("%-5d", this.portee) + " km"
+                    + SYSTEM + " -> "
+                    + VAL + String.format("%-4d", this.degatMax) + " dmg"
+                    + SYSTEM + " - "
+                    + VAL + String.format("%-3d", this.precisionMax) + "% hit chance"
+                    + RESET;
+
+        String ligne2 = SYSTEM + String.format("%-10s", "Portée : ")
+                    + VAL + String.format("%-5d", this.porteeMax) + " km"
+                    + SYSTEM + " -> "
+                    + VAL + String.format("%-4d", this.degatMin) + " dmg"
+                    + SYSTEM + " - "
+                    + VAL + String.format("%-3d", this.precisionMin) + "% hit chance"
+                    + RESET;
+
+        sb.append(ligne1).append("\n");
+
+        // N'affiche la 2e ligne que si elle est différente de la 1re
+        if (!ligne1.equals(ligne2)) {
+            sb.append(ligne2).append("\n");
+        }
+
         if (this.nbTirs > 1)
         {
-            sb.append("\n")
-              .append(SYSTEM)
-              .append(String.format("%-10s", "Tirs : "))
-              .append(VAL).append(String.format("%-2d", this.nbTirs))
+            sb.append(SYSTEM)
+              .append(String.format("%-10s", "Tirs   : "))
+              .append(VAL).append(String.format("%-8d", this.nbTirs))
               .append(SYSTEM).append(" -> ")
               .append(String.format("%-15s", "MultiChance : "))
               .append(VAL).append(this.chanceMulti).append("%")
-              .append(RESET);
+              .append(RESET).append("\n");
         }
-    
-        sb.append("\n");
-    
+
         return sb.toString();
     }
+
     
 
 
